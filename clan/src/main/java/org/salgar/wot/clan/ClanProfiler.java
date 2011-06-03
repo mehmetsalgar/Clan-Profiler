@@ -37,35 +37,49 @@ import org.salgar.wot.clan.model.LandingZone;
 import org.salgar.wot.clan.model.LandingZone.Region;
 import org.salgar.wot.clan.model.MemberTank;
 import org.salgar.wot.clan.model.Vehicle;
+import org.salgar.wot.clan.model.Vehicle.Clazz;
+import org.salgar.wot.clan.model.Vehicle.Nation;
 
 public class ClanProfiler {
 	private static Logger log = Logger
 			.getLogger(org.salgar.wot.clan.ClanProfiler.class);
 	private DefaultHttpClient httpClient = null;
-	private final ArrayList<LandingZone> landingZones = new ArrayList<LandingZone>();
+	private ArrayList<LandingZone> landingZones = new ArrayList<LandingZone>();
 	private HashMap<String, Clan> clanCache = new HashMap<String, Clan>();
 
 	/**
+	 * salgar.clanprofiler.landing.region
+	 * salgar.clanprofiler.landing.clan
+	 * salgar.clanprofiler.landing.zones
 	 * @param args
 	 */
 	public static void main(String[] args) {
 		ClanProfiler clanProfiler = new ClanProfiler();
+		clanProfiler.initializeHttpClient();
 
 		List<LandingZone> actualLandingZones = null;
 
+		String clan = System.getProperty("salgar.clanprofiler.landing.clan");
 		String zones = System.getProperty("salgar.clanprofiler.landing.zones");
-		if (zones != null && !"".equals(zones)) {
-			actualLandingZones = clanProfiler.findLandingZones(zones);
+		if (clan != null && !"".equals(clan)) {
+			Clan selectedClan = clanProfiler.parseClanName("[EXP] " + clan);
+			clanProfiler.landingZones.get(0).getClanList().add(selectedClan);
+			clanProfiler.analyzeClans(clanProfiler.landingZones.get(0));
+			actualLandingZones = new ArrayList<LandingZone>();
+			actualLandingZones.add(clanProfiler.landingZones.get(0));
+		} else {
+			if (zones != null && !"".equals(zones)) {
+				actualLandingZones = clanProfiler.findLandingZones(zones);
+			} else {
+				actualLandingZones = clanProfiler.findLandingZones();
+			}
+			for (LandingZone landingZone : actualLandingZones) {
+				log.info("We are working Landing Zone: "
+						+ landingZone.getName() + " : " + landingZone.getUrl());
+				clanProfiler.profileClan(landingZone);
+			}
 		}
 
-		if (actualLandingZones == null) {
-			actualLandingZones = clanProfiler.findLandingZones();
-		}
-		for (LandingZone landingZone : actualLandingZones) {
-			log.info("We are working Landing Zone: " + landingZone.getName()
-					+ " : " + landingZone.getUrl());
-			clanProfiler.profileClan(landingZone);
-		}
 		clanProfiler.writeExcel(actualLandingZones);
 	}
 
@@ -215,6 +229,12 @@ public class ClanProfiler {
 						"http://uc.worldoftanks.eu/uc/clanwars/landing/842/?type=dialog",
 						Region.MED, new ArrayList<Clan>()));
 
+		landingZones
+				.add(new LandingZone(
+						"North Caucasus",
+						"http://uc.worldoftanks.eu/uc/clanwars/landing/864/?type=dialog",
+						Region.MED, new ArrayList<Clan>()));
+
 		// Europa
 		landingZones
 				.add(new LandingZone(
@@ -291,15 +311,13 @@ public class ClanProfiler {
 	}
 
 	public void profileClan(LandingZone landingZone) {
-		HttpGet getMethod = new HttpGet(landingZone.getUrl());
+		findClansFromWebsite(landingZone);
+		analyzeClans(landingZone);
 
-		getMethod
-				.setHeader(
-						"User-Agent",
-						"Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US; rv:1.9.2.17) Gecko/20110420 Firefox/3.6.17");
-		
-		getMethod
-		.setHeader("Accept-Charset", "ISO-8859-1,utf-8;q=0.7,*;q=0.7");
+		log.debug(landingZone.getClanList());
+	}
+
+	private void initializeHttpClient() {
 		httpClient = new DefaultHttpClient();
 		Boolean isProxy = true;
 
@@ -320,6 +338,18 @@ public class ClanProfiler {
 					new AuthScope("proxy-bn.bn.detemobil.de", 3128),
 					credentials);
 		}
+	}
+
+	private void findClansFromWebsite(LandingZone landingZone) {
+		HttpGet getMethod = new HttpGet(landingZone.getUrl());
+
+		getMethod
+				.setHeader(
+						"User-Agent",
+						"Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US; rv:1.9.2.17) Gecko/20110420 Firefox/3.6.17");
+
+		getMethod.setHeader("Accept-Charset", "ISO-8859-1,utf-8;q=0.7,*;q=0.7");
+
 		try {
 			HttpResponse response = httpClient.execute(getMethod);
 
@@ -355,64 +385,67 @@ public class ClanProfiler {
 
 				parseClans(clans, landingZone);
 			}
+			findOwner(result, landingZone);
+		} catch (Throwable t) {
+			log.error(t.getMessage(), t);
+		} finally {
 
-			String ownerIdentifier = "Battle with owner";
-			String ownerTag = "<div style=\"display:none;\" class=\"js-landing-tooltip-content\">";
-			String ownerEndTag = "<div class=\"landing-hint-msg\" style=\"color:#ffc56b;\"> Winner </div>";
+		}
+	}
 
-			int startOwnerPacker = result.indexOf(ownerIdentifier);
-			int endOwnerPacker = result.indexOf(ownerEndTag, startOwnerPacker);
+	private void findOwner(String result, LandingZone landingZone) {
+		String ownerIdentifier = "Battle with owner";
+		String ownerTag = "<div style=\"display:none;\" class=\"js-landing-tooltip-content\">";
+		String ownerEndTag = "<div class=\"landing-hint-msg\" style=\"color:#ffc56b;\"> Winner </div>";
 
-			String ownerPacker = result.substring(startOwnerPacker
-					+ ownerIdentifier.length(), endOwnerPacker);
+		int startOwnerPacker = result.indexOf(ownerIdentifier);
+		int endOwnerPacker = result.indexOf(ownerEndTag, startOwnerPacker);
 
-			String owner = ownerPacker.substring(
-					ownerPacker.lastIndexOf(ownerTag, endOwnerPacker)
-							+ ownerTag.length(), ownerPacker.length());
+		String ownerPacker = result.substring(startOwnerPacker
+				+ ownerIdentifier.length(), endOwnerPacker);
 
-			Clan ownerClan = parseClanName(owner);
+		String owner = ownerPacker.substring(
+				ownerPacker.lastIndexOf(ownerTag, endOwnerPacker)
+						+ ownerTag.length(), ownerPacker.length());
 
-			landingZone.getClanList().add(0, ownerClan);
+		Clan ownerClan = parseClanName(owner);
 
-			for (Clan clan : landingZone.getClanList()) {
+		landingZone.getClanList().add(0, ownerClan);
+	}
+
+	private void analyzeClans(LandingZone landingZone) {
+		for (Clan clan : landingZone.getClanList()) {
+			if (clanCache.get(clan.getName()) != null) {
+				continue;
+			}
+			if (clan.getName() != null && !"".equals(clan.getName())) {
+				findClanId(clan);
+			} else {
+				log.warn("We have an empty clan name!");
+			}
+		}
+
+		for (Clan clan : landingZone.getClanList()) {
+			if (clan.getName() != null && !"".equals(clan.getName())) {
 				if (clanCache.get(clan.getName()) != null) {
 					continue;
 				}
-				if (clan.getName() != null && !"".equals(clan.getName())) {
-					findClanId(clan);
-				} else {
-					log.warn("We have an empty clan name!");
+				try {
+					findMembers(clan);
+				} catch (Throwable t) {
+					log.error(
+							"We can't get the correct clan name for "
+									+ clan.getName() + " " + t.getMessage(), t);
 				}
-			}
 
-			for (Clan clan : landingZone.getClanList()) {
-				if (clan.getName() != null && !"".equals(clan.getName())) {
-					if (clanCache.get(clan.getName()) != null) {
-						continue;
-					}
-					try {
-						findMembers(clan);
-					} catch (Throwable t) {
-						log.error("We can't get the correct clan name for "
-								+ clan.getName() + " " + t.getMessage(), t);
-					}
-
-					for (ClanMember clanMember : clan.getClanMembers()) {
-						parseMemberDetails(clanMember);
-					}
-					clan.getConcurrentBattles().add(landingZone.getName());
-					clanCache.put(clan.getName(), clan);
-				} else {
-					log.warn("We have an empty clan name!");
+				for (ClanMember clanMember : clan.getClanMembers()) {
+					parseMemberDetails(clanMember);
 				}
+				clan.getConcurrentBattles().add(landingZone.getName());
+				clanCache.put(clan.getName(), clan);
+			} else {
+				log.warn("We have an empty clan name!");
 			}
-
-			log.debug(landingZone.getClanList());
-
-		} catch (ClientProtocolException e) {
-			log.error(e.getMessage(), e);
-		} catch (IOException e) {
-			log.error(e.getMessage(), e);
 		}
 	}
 
@@ -666,35 +699,37 @@ public class ClanProfiler {
 		} catch (FileNotFoundException e) {
 			log.error(e.getMessage(), e);
 		}
-		
+
 		List<Clan> clansWithConcurrentBattles = new ArrayList<Clan>();
 		for (LandingZone landingZone : landingZones) {
 			Sheet sh = wb.createSheet(landingZone.getName());
 			writeExcel(landingZone, sh);
-			
+
 			for (Clan clan : landingZone.getClanList()) {
 				if (clan.getConcurrentBattles().isEmpty() == false) {
 					clansWithConcurrentBattles.add(clan);
 				}
 			}
 		}
-		
+
 		if (clansWithConcurrentBattles.isEmpty() == false) {
 			Sheet sh = wb.createSheet("concurrent battles");
-			
+
 			int i = 0;
 			for (Clan clan : clansWithConcurrentBattles) {
 				Row row = sh.createRow(i);
 				i++;
-				
+
 				Cell clanNameCell = row.createCell(0);
 				clanNameCell.setCellValue(clan.getName());
-				
+
 				Cell concurrentBattlesCell = row.createCell(1);
-				concurrentBattlesCell.setCellValue(calculateLandingZoneNames(clan.getConcurrentBattles()));				
+				concurrentBattlesCell
+						.setCellValue(calculateLandingZoneNames(clan
+								.getConcurrentBattles()));
 			}
 		}
-		
+
 		try {
 			wb.write(fos);
 		} catch (IOException e) {
@@ -706,18 +741,18 @@ public class ClanProfiler {
 			log.error(e.getMessage(), e);
 		}
 	}
-	
+
 	public String calculateLandingZoneNames(List<String> conccurentBattles) {
 		StringBuffer sb = new StringBuffer();
-		
+
 		for (String concurrentBattle : conccurentBattles) {
 			sb.append(concurrentBattle);
 			sb.append(",");
 		}
-		
+
 		return sb.toString();
 	}
-	
+
 	public void writeExcel(LandingZone landingZone, Sheet sh) {
 		int i = 0;
 		for (Clan clan : landingZone.getClanList()) {
@@ -728,23 +763,47 @@ public class ClanProfiler {
 			i++;
 
 			for (ClanMember clanMember : clan.getClanMembers()) {
+				boolean topUsFound = false;
+				boolean topGerFound = false;
+				boolean topUssrFound = false;
 				if (clanMember.getMemberTanks().isEmpty() == false) {
 					Row memberRow = sh.createRow(i);
 					Cell memberCell = memberRow.createCell(1);
-					memberCell.setCellValue(clanMember.getName() + " (" + clanMember.getRole() + ")");
+					memberCell.setCellValue(clanMember.getName() + " ("
+							+ clanMember.getRole() + ")");
 
 					boolean firstTime = true;
 					Collections.sort(clanMember.getMemberTanks());
 					for (MemberTank memberTank : clanMember.getMemberTanks()) {
-						if (memberTank.getVehicle().getTier() >= 9) {
-							Integer actualValue = clanTankPopulation
-									.get(memberTank.getVehicle().getName());
-							if (actualValue == null) {
-								actualValue = 0;
+						if (memberTank.getVehicle().getTier() >= 9
+								|| (Clazz.SPG.equals(memberTank.getVehicle()
+										.getClazz()))
+								&& memberTank.getVehicle().getTier() >= 7) {
+							if ((Nation.US.equals(memberTank.getVehicle()
+									.getNation()) && topUsFound == false)
+									|| (Nation.GER.equals(memberTank
+											.getVehicle().getNation()) && topGerFound == false)
+									|| (Nation.USSR.equals(memberTank
+											.getVehicle().getNation()) && topUssrFound == false)) {
+								Integer actualValue = clanTankPopulation
+										.get(memberTank.getVehicle().getName());
+								if (actualValue == null) {
+									actualValue = 0;
+								}
+								int result = actualValue.intValue() + 1;
+								if (Nation.US.equals(memberTank.getVehicle()
+										.getNation())) {
+									topUsFound = true;
+								} else if (Nation.GER.equals(memberTank
+										.getVehicle().getNation())) {
+									topGerFound = true;
+								} else if (Nation.USSR.equals(memberTank
+										.getVehicle().getNation())) {
+									topUssrFound = true;
+								}
+								clanTankPopulation.put(memberTank.getVehicle()
+										.getName(), result);
 							}
-							int result = actualValue.intValue() + 1;
-							clanTankPopulation.put(memberTank.getVehicle()
-									.getName(), result);
 						}
 						if (firstTime == true) {
 							Cell tanksCell = memberRow.createCell(2);
@@ -787,7 +846,7 @@ public class ClanProfiler {
 									.doubleValue()) * 100;
 							extraporcentCell.setCellValue(porcent);
 						}
-						i++;						
+						i++;
 					}
 					firstTime = true;
 
