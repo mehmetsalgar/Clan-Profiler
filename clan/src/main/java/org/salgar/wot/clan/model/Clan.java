@@ -7,7 +7,7 @@ public class Clan {
 	private String nick;
 	private String id;
 	private ArrayList<ClanMember> clanMembers = new ArrayList<ClanMember>(100);
-	private ArrayList<String> concurrentBattles = new ArrayList<String>();
+	private ArrayList<Battle> concurrentBattles = new ArrayList<Battle>();
 
 	public String getName() {
 		return name;
@@ -47,11 +47,8 @@ public class Clan {
 		this.clanMembers = clanMembers;
 	}
 
-	public ArrayList<String> getConcurrentBattles() {
+	public ArrayList<Battle> getConcurrentBattles() {
 		return concurrentBattles;
 	}
 
-	public void setConcurrentBattles(ArrayList<String> concurrentBattles) {
-		this.concurrentBattles = concurrentBattles;
-	}
 }

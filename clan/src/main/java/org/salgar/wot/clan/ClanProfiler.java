@@ -12,6 +12,7 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.StringTokenizer;
 import java.util.Map.Entry;
 
@@ -31,6 +32,7 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.salgar.wot.clan.model.Battle;
 import org.salgar.wot.clan.model.Clan;
 import org.salgar.wot.clan.model.ClanMember;
 import org.salgar.wot.clan.model.LandingZone;
@@ -46,11 +48,12 @@ public class ClanProfiler {
 	private DefaultHttpClient httpClient = null;
 	private ArrayList<LandingZone> landingZones = new ArrayList<LandingZone>();
 	private HashMap<String, Clan> clanCache = new HashMap<String, Clan>();
+	private ArrayList<Vehicle> INTERESTED_VEHICLES = new Constants().INTERESTED_VEHICLES;
 
 	/**
-	 * salgar.clanprofiler.landing.region
-	 * salgar.clanprofiler.landing.clan
+	 * salgar.clanprofiler.landing.region salgar.clanprofiler.landing.clan
 	 * salgar.clanprofiler.landing.zones
+	 * 
 	 * @param args
 	 */
 	public static void main(String[] args) {
@@ -150,6 +153,12 @@ public class ClanProfiler {
 						"Balearic Islands",
 						"http://uc.worldoftanks.eu/uc/clanwars/landing/841/?type=dialog",
 						Region.MED, new ArrayList<Clan>()));
+		
+		landingZones
+		.add(new LandingZone(
+				"Tlemsen",
+				"http://uc.worldoftanks.eu/uc/clanwars/landing/835/?type=dialog",
+				Region.MED, new ArrayList<Clan>()));
 
 		landingZones
 				.add(new LandingZone(
@@ -441,11 +450,98 @@ public class ClanProfiler {
 				for (ClanMember clanMember : clan.getClanMembers()) {
 					parseMemberDetails(clanMember);
 				}
-				clan.getConcurrentBattles().add(landingZone.getName());
+				Battle battle = new Battle();
+				battle.setProvince(landingZone.getName());
+				clan.getConcurrentBattles().add(battle);
 				clanCache.put(clan.getName(), clan);
 			} else {
 				log.warn("We have an empty clan name!");
 			}
+			findConcurrentBattles(clan);
+		}
+	}
+
+	private void findConcurrentBattles(Clan clan) {
+		HttpGet getConcurrentBattles = null;
+
+		getConcurrentBattles = new HttpGet(
+				"http://uc.worldoftanks.eu/uc/clans/" + clan.getId() + "/battles/?type=table&offset=0&limit=1000&order_by=time&search=&echo=1&id=js-battles-table");
+
+		getConcurrentBattles
+				.setHeader(
+						"User-Agent",
+						"Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US; rv:1.9.2.17) Gecko/20110420 Firefox/3.6.17");
+		getConcurrentBattles.setHeader("X-Requested-With", "XMLHttpRequest");
+		// http://http://uc.worldoftanks.eu/uc/clans/500000083/battles/
+
+		try {
+			HttpResponse response = httpClient.execute(getConcurrentBattles);
+
+			HttpEntity entity = response.getEntity();
+
+			BufferedInputStream bis = new BufferedInputStream(
+					entity.getContent());
+			int length = 0;
+			byte[] buff = new byte[1024];
+			StringBuffer sb = new StringBuffer(1024);
+			while ((length = bis.read(buff)) != -1) {
+				sb.append(new String(buff, 0, length, "UTF-8"));
+			}
+
+			String result = sb.toString();
+			log.debug(result);
+
+			String provinceTagStart = "\"name\":\"";
+			String provinceTagEnd = "\"";
+
+			int tagStart = 0;
+
+			while ((tagStart = result.indexOf(provinceTagStart, tagStart)) != -1) {
+
+				int tagEnd = result.indexOf(provinceTagEnd, tagStart
+						+ provinceTagStart.length());
+
+				String province = result.substring(
+						tagStart + provinceTagStart.length(), tagEnd);
+
+				String idTagStart = "\"id\":\"";
+				String idTagEnd = "\"}";
+				
+				int idStartIndex = result.indexOf(idTagStart, tagEnd);
+				int idEndIndex = result.indexOf(idTagEnd, idStartIndex
+						+ idTagStart.length());
+
+				String id = result.substring(
+						idStartIndex + idTagStart.length(), idEndIndex);
+				
+				String timeTagStart = "\"time\":";
+				String timeTagEnd = "}";
+
+				int timeStartIndex = result.indexOf(timeTagStart, tagEnd);
+				int timeEndIndex = result.indexOf(timeTagEnd, timeStartIndex
+						+ timeTagStart.length());
+
+				String time = result.substring(
+						timeStartIndex + timeTagStart.length(), timeEndIndex);
+
+				
+
+				
+
+				Battle battle = new Battle();
+				battle.setProvince(province);
+				battle.setDate(new Date(
+						(Double.valueOf(time)).longValue() * 1000));
+				battle.setId(id);
+				clan.getConcurrentBattles().add(battle);
+				
+				tagStart++;
+			}
+
+		} catch (ClientProtocolException e) {
+			log.error(e.getMessage(), e);
+		} catch (IOException e) {
+			log.error(e.getMessage(), e);
 		}
 	}
 
@@ -461,7 +557,9 @@ public class ClanProfiler {
 			Clan cachedClan = null;
 			if ((cachedClan = clanCache.get(clan.getName())) != null) {
 				clan = cachedClan;
-				clan.getConcurrentBattles().add(landingZone.getName());
+				Battle battle = new Battle();
+				battle.setProvince(landingZone.getName());
+				clan.getConcurrentBattles().add(battle);
 			}
 			landingZone.getClanList().add(clan);
 			clanStart++;
@@ -655,7 +753,7 @@ public class ClanProfiler {
 	private void parseTanks(String result, ClanMember clanMember) {
 		String valueTag = "right value\">";
 		String endTag = "</td>";
-		for (Vehicle tank : new Constants().INTERESTED_VEHICLES) {
+		for (Vehicle tank : INTERESTED_VEHICLES) {
 			int startTank = result.indexOf(">" + tank.getName() + "<");
 
 			if (startTank >= 0) {
@@ -742,12 +840,16 @@ public class ClanProfiler {
 		}
 	}
 
-	public String calculateLandingZoneNames(List<String> conccurentBattles) {
+	public String calculateLandingZoneNames(List<Battle> conccurentBattles) {
 		StringBuffer sb = new StringBuffer();
 
-		for (String concurrentBattle : conccurentBattles) {
-			sb.append(concurrentBattle);
-			sb.append(",");
+		for (Battle concurrentBattle : conccurentBattles) {
+			sb.append(concurrentBattle.getProvince());
+			sb.append(" (");
+			sb.append(concurrentBattle.getDate());
+			sb.append(" , ");
+			sb.append(concurrentBattle.getId());
+			sb.append("),");
 		}
 
 		return sb.toString();
@@ -756,10 +858,12 @@ public class ClanProfiler {
 	public void writeExcel(LandingZone landingZone, Sheet sh) {
 		int i = 0;
 		for (Clan clan : landingZone.getClanList()) {
-			HashMap<String, Integer> clanTankPopulation = new HashMap<String, Integer>();
+			Map<Vehicle, Integer> clanTankPopulation = new HashMap<Vehicle, Integer>();
 			Row clanRow = sh.createRow(i);
 			Cell clanCell = clanRow.createCell(0);
-			clanCell.setCellValue(clan.getName());
+			clanCell.setCellValue(clan.getName() + " ( "
+					+ calculateLandingZoneNames(clan.getConcurrentBattles())
+					+ " )");
 			i++;
 
 			for (ClanMember clanMember : clan.getClanMembers()) {
@@ -778,7 +882,7 @@ public class ClanProfiler {
 						if (memberTank.getVehicle().getTier() >= 9
 								|| (Clazz.SPG.equals(memberTank.getVehicle()
 										.getClazz()))
-								&& memberTank.getVehicle().getTier() >= 7) {
+								&& memberTank.getVehicle().getTier() >= 6) {
 							if ((Nation.US.equals(memberTank.getVehicle()
 									.getNation()) && topUsFound == false)
 									|| (Nation.GER.equals(memberTank
@@ -786,7 +890,7 @@ public class ClanProfiler {
 									|| (Nation.USSR.equals(memberTank
 											.getVehicle().getNation()) && topUssrFound == false)) {
 								Integer actualValue = clanTankPopulation
-										.get(memberTank.getVehicle().getName());
+										.get(memberTank.getVehicle());
 								if (actualValue == null) {
 									actualValue = 0;
 								}
@@ -801,8 +905,8 @@ public class ClanProfiler {
 										.getVehicle().getNation())) {
 									topUssrFound = true;
 								}
-								clanTankPopulation.put(memberTank.getVehicle()
-										.getName(), result);
+								clanTankPopulation.put(memberTank.getVehicle(),
+										result);
 							}
 						}
 						if (firstTime == true) {
@@ -856,10 +960,11 @@ public class ClanProfiler {
 				i++;
 				Row tankPopulationRow = sh.createRow(i);
 				int y = 1;
-				for (Entry<String, Integer> entry : clanTankPopulation
+
+				for (Entry<Vehicle, Integer> entry : clanTankPopulation
 						.entrySet()) {
 					Cell tankPopulation = tankPopulationRow.createCell(y);
-					tankPopulation.setCellValue(entry.getKey() + ": "
+					tankPopulation.setCellValue(entry.getKey().getName() + ": "
 							+ entry.getValue());
 					y++;
 				}
