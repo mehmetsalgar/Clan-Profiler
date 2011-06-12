@@ -51,4 +51,14 @@ public class Clan {
 		return concurrentBattles;
 	}
 
+	@Override
+	public boolean equals(Object obj) {
+		if (!(obj instanceof Clan)) {
+			return false;
+		}
+		Clan tmp = (Clan) obj;
+
+		return this.name.equals(tmp.getName());
+	}
+
 }

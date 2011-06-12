@@ -63,6 +63,7 @@ public class ClanProfiler {
 		List<LandingZone> actualLandingZones = null;
 
 		String clan = System.getProperty("salgar.clanprofiler.landing.clan");
+		//String clan = "Beerpanzer_LV_άλφα";
 		String zones = System.getProperty("salgar.clanprofiler.landing.zones");
 		if (clan != null && !"".equals(clan)) {
 			Clan selectedClan = clanProfiler.parseClanName("[EXP] " + clan);
@@ -433,10 +434,11 @@ public class ClanProfiler {
 				log.warn("We have an empty clan name!");
 			}
 		}
-
-		for (Clan clan : landingZone.getClanList()) {
+        for(int i = 0, n = landingZone.getClanList().size(); i < n; i++) {
+        	Clan clan = landingZone.getClanList().get(i);
 			if (clan.getName() != null && !"".equals(clan.getName())) {
 				if (clanCache.get(clan.getName()) != null) {
+					landingZone.getClanList().set(i, clanCache.get(clan.getName()));
 					continue;
 				}
 				try {
