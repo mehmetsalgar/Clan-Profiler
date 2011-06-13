@@ -15,6 +15,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.StringTokenizer;
 import java.util.Map.Entry;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.FutureTask;
+import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.http.HttpEntity;
@@ -47,8 +51,11 @@ public class ClanProfiler {
 			.getLogger(org.salgar.wot.clan.ClanProfiler.class);
 	private DefaultHttpClient httpClient = null;
 	private ArrayList<LandingZone> landingZones = new ArrayList<LandingZone>();
-	private HashMap<String, Clan> clanCache = new HashMap<String, Clan>();
+	private Map<String, Clan> clanCache = Collections
+			.synchronizedMap(new HashMap<String, Clan>());
 	private ArrayList<Vehicle> INTERESTED_VEHICLES = new Constants().INTERESTED_VEHICLES;
+	private ExecutorService pool = null;
+	private int threadPoolCount = 1;
 
 	/**
 	 * salgar.clanprofiler.landing.region salgar.clanprofiler.landing.clan
@@ -63,8 +70,9 @@ public class ClanProfiler {
 		List<LandingZone> actualLandingZones = null;
 
 		String clan = System.getProperty("salgar.clanprofiler.landing.clan");
-		//String clan = "Beerpanzer_LV_άλφα";
+		// String clan = "Beerpanzer_LV_άλφα";
 		String zones = System.getProperty("salgar.clanprofiler.landing.zones");
+
 		if (clan != null && !"".equals(clan)) {
 			Clan selectedClan = clanProfiler.parseClanName("[EXP] " + clan);
 			clanProfiler.landingZones.get(0).getClanList().add(selectedClan);
@@ -84,7 +92,12 @@ public class ClanProfiler {
 			}
 		}
 
+		clanProfiler.poolShutdown();
 		clanProfiler.writeExcel(actualLandingZones);
+	}
+
+	public void poolShutdown() {
+		pool.shutdown();
 	}
 
 	public List<LandingZone> findLandingZones(String zones) {
@@ -132,6 +145,14 @@ public class ClanProfiler {
 	}
 
 	public ClanProfiler() {
+		String threads = System.getProperty(
+				"salgar.clanprofiler.landing.threads", "10");
+
+		try {
+			threadPoolCount = Integer.valueOf(threads);
+		} catch (Throwable t) {
+			log.error(t.getMessage(), t);
+		}
 		landingZones
 				.add(new LandingZone(
 						"Bir Gandus",
@@ -154,12 +175,12 @@ public class ClanProfiler {
 						"Balearic Islands",
 						"http://uc.worldoftanks.eu/uc/clanwars/landing/841/?type=dialog",
 						Region.MED, new ArrayList<Clan>()));
-		
+
 		landingZones
-		.add(new LandingZone(
-				"Tlemsen",
-				"http://uc.worldoftanks.eu/uc/clanwars/landing/835/?type=dialog",
-				Region.MED, new ArrayList<Clan>()));
+				.add(new LandingZone(
+						"Tlemsen",
+						"http://uc.worldoftanks.eu/uc/clanwars/landing/835/?type=dialog",
+						Region.MED, new ArrayList<Clan>()));
 
 		landingZones
 				.add(new LandingZone(
@@ -423,9 +444,53 @@ public class ClanProfiler {
 		landingZone.getClanList().add(0, ownerClan);
 	}
 
+	// private void analyzeClans(LandingZone landingZone) {
+	// for(int i = 0, n = landingZone.getClanList().size(); i < n; i++) {
+	// Clan clan = landingZone.getClanList().get(i);
+	// if (clanCache.get(clan.getName()) != null) {
+	// landingZone.getClanList().set(i, clanCache.get(clan.getName()));
+	// continue;
+	// }
+	// if (clan.getName() != null && !"".equals(clan.getName())) {
+	// findClanId(clan);
+	// } else {
+	// log.warn("We have an empty clan name!");
+	// }
+	// }
+	// for(int i = 0, n = landingZone.getClanList().size(); i < n; i++) {
+	// Clan clan = landingZone.getClanList().get(i);
+	// if (clan.getName() != null && !"".equals(clan.getName())) {
+	// if (clanCache.get(clan.getName()) != null) {
+	// //landingZone.getClanList().set(i, clanCache.get(clan.getName()));
+	// continue;
+	// }
+	// try {
+	// findMembers(clan);
+	// } catch (Throwable t) {
+	// log.error(
+	// "We can't get the correct clan name for "
+	// + clan.getName() + " " + t.getMessage(), t);
+	// }
+	//
+	// for (ClanMember clanMember : clan.getClanMembers()) {
+	// parseMemberDetails(clanMember);
+	// }
+	// Battle battle = new Battle();
+	// battle.setProvince(landingZone.getName());
+	// clan.getConcurrentBattles().add(battle);
+	// clanCache.put(clan.getName(), clan);
+	// } else {
+	// log.warn("We have an empty clan name!");
+	// }
+	// findConcurrentBattles(clan);
+	// }
+	// }
+
 	private void analyzeClans(LandingZone landingZone) {
-		for (Clan clan : landingZone.getClanList()) {
+		for (int i = 0, n = landingZone.getClanList().size(); i < n; i++) {
+			Clan clan = landingZone.getClanList().get(i);
 			if (clanCache.get(clan.getName()) != null) {
+				landingZone.getClanList().set(i, clanCache.get(clan.getName()));
 				continue;
 			}
 			if (clan.getName() != null && !"".equals(clan.getName())) {
@@ -434,40 +499,44 @@ public class ClanProfiler {
 				log.warn("We have an empty clan name!");
 			}
 		}
-        for(int i = 0, n = landingZone.getClanList().size(); i < n; i++) {
-        	Clan clan = landingZone.getClanList().get(i);
+		pool = Executors.newFixedThreadPool(threadPoolCount);
+		for (int i = 0, n = landingZone.getClanList().size(); i < n; i++) {
+			Clan clan = landingZone.getClanList().get(i);
 			if (clan.getName() != null && !"".equals(clan.getName())) {
 				if (clanCache.get(clan.getName()) != null) {
-					landingZone.getClanList().set(i, clanCache.get(clan.getName()));
+					// landingZone.getClanList().set(i,
+					// clanCache.get(clan.getName()));
 					continue;
 				}
 				try {
-					findMembers(clan);
+					FutureTask<?> task = new FutureTask<Object>(
+							new ClanAnalizer(this.clanCache,
+									this.INTERESTED_VEHICLES, landingZone, clan),
+							null);
+					pool.submit(task);
 				} catch (Throwable t) {
 					log.error(
 							"We can't get the correct clan name for "
 									+ clan.getName() + " " + t.getMessage(), t);
 				}
-
-				for (ClanMember clanMember : clan.getClanMembers()) {
-					parseMemberDetails(clanMember);
-				}
-				Battle battle = new Battle();
-				battle.setProvince(landingZone.getName());
-				clan.getConcurrentBattles().add(battle);
-				clanCache.put(clan.getName(), clan);
-			} else {
-				log.warn("We have an empty clan name!");
 			}
-			findConcurrentBattles(clan);
 		}
+		pool.shutdown();
+		try {
+			pool.awaitTermination(Long.MAX_VALUE, TimeUnit.MILLISECONDS);
+		} catch (InterruptedException e) {
+			log.error(e.getMessage(), e);
+		}
+
 	}
 
 	private void findConcurrentBattles(Clan clan) {
 		HttpGet getConcurrentBattles = null;
 
 		getConcurrentBattles = new HttpGet(
-				"http://uc.worldoftanks.eu/uc/clans/" + clan.getId() + "/battles/?type=table&offset=0&limit=1000&order_by=time&search=&echo=1&id=js-battles-table");
+				"http://uc.worldoftanks.eu/uc/clans/"
+						+ clan.getId()
+						+ "/battles/?type=table&offset=0&limit=1000&order_by=time&search=&echo=1&id=js-battles-table");
 
 		getConcurrentBattles
 				.setHeader(
@@ -508,14 +577,14 @@ public class ClanProfiler {
 
 				String idTagStart = "\"id\":\"";
 				String idTagEnd = "\"}";
-				
+
 				int idStartIndex = result.indexOf(idTagStart, tagEnd);
 				int idEndIndex = result.indexOf(idTagEnd, idStartIndex
 						+ idTagStart.length());
 
 				String id = result.substring(
 						idStartIndex + idTagStart.length(), idEndIndex);
-				
+
 				String timeTagStart = "\"time\":";
 				String timeTagEnd = "}";
 
@@ -526,17 +595,13 @@ public class ClanProfiler {
 				String time = result.substring(
 						timeStartIndex + timeTagStart.length(), timeEndIndex);
 
-				
-
-				
-
 				Battle battle = new Battle();
 				battle.setProvince(province);
 				battle.setDate(new Date(
 						(Double.valueOf(time)).longValue() * 1000));
 				battle.setId(id);
 				clan.getConcurrentBattles().add(battle);
-				
+
 				tagStart++;
 			}
 

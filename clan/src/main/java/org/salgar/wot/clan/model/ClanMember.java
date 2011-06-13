@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 public class ClanMember {
 	private String id;
+	private String clan;
 	private String name;
 	private String role;
 	private ArrayList<MemberTank> memberTanks = new ArrayList<MemberTank>(5);
@@ -44,5 +45,13 @@ public class ClanMember {
 
 	public void setMemberTanks(ArrayList<MemberTank> memberTanks) {
 		this.memberTanks = memberTanks;
+	}
+
+	public String getClan() {
+		return clan;
+	}
+
+	public void setClan(String clan) {
+		this.clan = clan;
 	}
 }
