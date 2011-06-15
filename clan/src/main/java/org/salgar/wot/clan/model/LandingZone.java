@@ -6,12 +6,14 @@ public class LandingZone {
 	private String name;
 	private String url;
 	private Region region;
+	private int battleStart;
 	private ArrayList<Clan> clanList;
 	
-	public LandingZone(String name, String url, Region region, ArrayList<Clan> clanList) {
+	public LandingZone(String name, String url, Region region, int battleStart, ArrayList<Clan> clanList) {
 		this.name = name;
 		this.url = url;
 		this.region = region;
+		this.battleStart = battleStart;
 		this.clanList = clanList;
 	}
 
@@ -65,6 +67,14 @@ public class LandingZone {
 
 	public void setRegion(Region region) {
 		this.region = region;
+	}
+
+	public int getBattleStart() {
+		return battleStart;
+	}
+
+	public void setBattleStart(int battleStart) {
+		this.battleStart = battleStart;
 	}
 }
 

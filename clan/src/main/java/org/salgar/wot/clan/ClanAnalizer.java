@@ -46,6 +46,7 @@ public class ClanAnalizer implements Runnable {
 		this.landingZone = landingZone;
 		this.clan = clan;
 		this.INTERESTED_VEHICLES = INTERESTED_VEHICLES;
+
 		initializeHttpClient();
 	}
 

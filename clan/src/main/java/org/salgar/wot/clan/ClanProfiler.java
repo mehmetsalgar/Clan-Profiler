@@ -8,6 +8,7 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
@@ -85,10 +86,12 @@ public class ClanProfiler {
 			} else {
 				actualLandingZones = clanProfiler.findLandingZones();
 			}
-			for (LandingZone landingZone : actualLandingZones) {
+			for (int i = 0, n = actualLandingZones.size(); i < n; i++) {
+				LandingZone landingZone = actualLandingZones.get(i);
 				log.info("We are working Landing Zone: "
 						+ landingZone.getName() + " : " + landingZone.getUrl());
-				clanProfiler.profileClan(landingZone);
+				clanProfiler
+						.profileClan(landingZone, i == n - 1 ? true : false);
 			}
 		}
 
@@ -97,7 +100,13 @@ public class ClanProfiler {
 	}
 
 	public void poolShutdown() {
-		pool.shutdown();
+		try {
+			while(pool.awaitTermination(5000L, TimeUnit.MILLISECONDS) == false) {
+				
+			}
+		} catch (InterruptedException e) {
+			log.error(e.getMessage(), e);
+		}
 	}
 
 	public List<LandingZone> findLandingZones(String zones) {
@@ -120,21 +129,24 @@ public class ClanProfiler {
 	public List<LandingZone> findLandingZones() {
 		String region = System.getProperty(
 				"salgar.clanprofiler.landing.region", "ALL");
-
+		
+		String offset = System.getProperty("salgar.clanprofiler.gmt", "0");
+		int gmt_offset = Integer.valueOf(offset);
+		int hour = Calendar.getInstance().get(Calendar.HOUR_OF_DAY);
 		if ("ALL".equals(region)) {
 			return landingZones;
 		} else if (Region.MED.getName().equals(region)) {
 			List<LandingZone> meditereanZones = new ArrayList<LandingZone>();
 			for (LandingZone landingZone : landingZones) {
-				if (Region.MED.equals(landingZone.getRegion())) {
+				if (Region.MED.equals(landingZone.getRegion()) && landingZone.getBattleStart() + gmt_offset > hour) {
 					meditereanZones.add(landingZone);
 				}
 			}
 			return meditereanZones;
-		} else if (Region.EU.getName().equals(region)) {
+		} else if (Region.EU.getName().equals(region) ) {
 			List<LandingZone> europeanZones = new ArrayList<LandingZone>();
 			for (LandingZone landingZone : landingZones) {
-				if (Region.EU.equals(landingZone.getRegion())) {
+				if (Region.EU.equals(landingZone.getRegion()) && landingZone.getBattleStart() + gmt_offset > hour) {
 					europeanZones.add(landingZone);
 				}
 			}
@@ -153,199 +165,209 @@ public class ClanProfiler {
 		} catch (Throwable t) {
 			log.error(t.getMessage(), t);
 		}
+
+		pool = Executors.newFixedThreadPool(threadPoolCount);
 		landingZones
 				.add(new LandingZone(
 						"Bir Gandus",
 						"http://uc.worldoftanks.eu/uc/clanwars/landing/840/?type=dialog",
-						Region.MED, new ArrayList<Clan>()));
+						Region.MED, 19, new ArrayList<Clan>()));
 		landingZones
 				.add(new LandingZone(
 						"Canary Island",
 						"http://uc.worldoftanks.eu/uc/clanwars/landing/843/?type=dialog",
-						Region.MED, new ArrayList<Clan>()));
+						Region.MED, 19, new ArrayList<Clan>()));
 
 		landingZones
 				.add(new LandingZone(
 						"Souss-Massa-Draa",
 						"http://uc.worldoftanks.eu/uc/clanwars/landing/855/?type=dialog",
-						Region.MED, new ArrayList<Clan>()));
+						Region.MED, 19, new ArrayList<Clan>()));
 
 		landingZones
 				.add(new LandingZone(
 						"Balearic Islands",
 						"http://uc.worldoftanks.eu/uc/clanwars/landing/841/?type=dialog",
-						Region.MED, new ArrayList<Clan>()));
+						Region.MED, 19, new ArrayList<Clan>()));
 
 		landingZones
 				.add(new LandingZone(
 						"Tlemsen",
 						"http://uc.worldoftanks.eu/uc/clanwars/landing/835/?type=dialog",
-						Region.MED, new ArrayList<Clan>()));
+						Region.MED, 19, new ArrayList<Clan>()));
 
 		landingZones
 				.add(new LandingZone(
 						"Tébessa",
 						"http://uc.worldoftanks.eu/uc/clanwars/landing/836/?type=dialog",
-						Region.MED, new ArrayList<Clan>()));
+						Region.MED, 19, new ArrayList<Clan>()));
 
 		landingZones
 				.add(new LandingZone(
 						"Sicily",
 						"http://uc.worldoftanks.eu/uc/clanwars/landing/852/?type=dialog",
-						Region.MED, new ArrayList<Clan>()));
+						Region.MED, 19, new ArrayList<Clan>()));
 
 		landingZones
 				.add(new LandingZone(
 						"Malta",
 						"http://uc.worldoftanks.eu/uc/clanwars/landing/857/?type=dialog",
-						Region.MED, new ArrayList<Clan>()));
+						Region.MED, 19, new ArrayList<Clan>()));
 
 		landingZones
 				.add(new LandingZone(
 						"South Aegean",
 						"http://uc.worldoftanks.eu/uc/clanwars/landing/849/?type=dialog",
-						Region.MED, new ArrayList<Clan>()));
+						Region.MED, 18, new ArrayList<Clan>()));
 
 		landingZones
 				.add(new LandingZone(
 						"Matrouh",
 						"http://uc.worldoftanks.eu/uc/clanwars/landing/837/?type=dialog",
-						Region.MED, new ArrayList<Clan>()));
+						Region.MED, 18, new ArrayList<Clan>()));
 
 		landingZones
 				.add(new LandingZone(
 						"Beheira",
 						"http://uc.worldoftanks.eu/uc/clanwars/landing/838/?type=dialog",
-						Region.MED, new ArrayList<Clan>()));
+						Region.MED, 18, new ArrayList<Clan>()));
 
 		landingZones
 				.add(new LandingZone(
 						"Duba",
 						"http://uc.worldoftanks.eu/uc/clanwars/landing/886/?type=dialog",
-						Region.MED, new ArrayList<Clan>()));
+						Region.MED, 17, new ArrayList<Clan>()));
 
 		landingZones
 				.add(new LandingZone(
 						"Cyprus",
 						"http://uc.worldoftanks.eu/uc/clanwars/landing/833/?type=dialog",
-						Region.MED, new ArrayList<Clan>()));
+						Region.MED, 18, new ArrayList<Clan>()));
 
 		landingZones
 				.add(new LandingZone(
 						"Maysan",
 						"http://uc.worldoftanks.eu/uc/clanwars/landing/850/?type=dialog",
-						Region.MED, new ArrayList<Clan>()));
+						Region.MED, 17, new ArrayList<Clan>()));
 
 		landingZones
 				.add(new LandingZone(
 						"Crimea",
 						"http://uc.worldoftanks.eu/uc/clanwars/landing/893/?type=dialog",
-						Region.MED, new ArrayList<Clan>()));
+						Region.MED, 18, new ArrayList<Clan>()));
 
 		landingZones
 				.add(new LandingZone(
 						"Crotia",
 						"http://uc.worldoftanks.eu/uc/clanwars/landing/896/?type=dialog",
-						Region.MED, new ArrayList<Clan>()));
+						Region.MED, 19, new ArrayList<Clan>()));
 
 		landingZones
 				.add(new LandingZone(
 						"Corsica",
 						"http://uc.worldoftanks.eu/uc/clanwars/landing/846/?type=dialog",
-						Region.MED, new ArrayList<Clan>()));
+						Region.MED, 19, new ArrayList<Clan>()));
 
 		landingZones
 				.add(new LandingZone(
 						"Protugal",
 						"http://uc.worldoftanks.eu/uc/clanwars/landing/842/?type=dialog",
-						Region.MED, new ArrayList<Clan>()));
+						Region.MED, 19, new ArrayList<Clan>()));
 
 		landingZones
 				.add(new LandingZone(
 						"North Caucasus",
 						"http://uc.worldoftanks.eu/uc/clanwars/landing/864/?type=dialog",
-						Region.MED, new ArrayList<Clan>()));
+						Region.MED, 17, new ArrayList<Clan>()));
 
 		// Europa
 		landingZones
 				.add(new LandingZone(
 						"Kanino-Timansky District",
 						"http://uc.worldoftanks.eu/uc/clanwars/landing/883/?type=dialog",
-						Region.EU, new ArrayList<Clan>()));
+						Region.EU, 17, new ArrayList<Clan>()));
 
 		landingZones
 				.add(new LandingZone(
 						"Murmansk Region",
 						"http://uc.worldoftanks.eu/uc/clanwars/landing/863/?type=dialog",
-						Region.EU, new ArrayList<Clan>()));
+						Region.EU, 17, new ArrayList<Clan>()));
 
 		landingZones
 				.add(new LandingZone(
 						"Troms",
 						"http://uc.worldoftanks.eu/uc/clanwars/landing/860/?type=dialog",
-						Region.EU, new ArrayList<Clan>()));
+						Region.EU, 19, new ArrayList<Clan>()));
 
 		landingZones
 				.add(new LandingZone(
 						"Iceland",
 						"http://uc.worldoftanks.eu/uc/clanwars/landing/851/?type=dialog",
-						Region.EU, new ArrayList<Clan>()));
+						Region.EU, 19, new ArrayList<Clan>()));
 
 		landingZones
 				.add(new LandingZone(
 						"Courland",
 						"http://uc.worldoftanks.eu/uc/clanwars/landing/854/?type=dialog",
-						Region.EU, new ArrayList<Clan>()));
+						Region.EU, 18, new ArrayList<Clan>()));
 
 		landingZones
 				.add(new LandingZone(
 						"Kaliningrad Region",
 						"http://uc.worldoftanks.eu/uc/clanwars/landing/865/?type=dialog",
-						Region.EU, new ArrayList<Clan>()));
+						Region.EU, 18, new ArrayList<Clan>()));
 
 		landingZones
 				.add(new LandingZone(
 						"Jutland",
 						"http://uc.worldoftanks.eu/uc/clanwars/landing/834/?type=dialog",
-						Region.EU, new ArrayList<Clan>()));
+						Region.EU, 19, new ArrayList<Clan>()));
 
 		landingZones
 				.add(new LandingZone(
 						"Netherlands",
 						"http://uc.worldoftanks.eu/uc/clanwars/landing/859/?type=dialog",
-						Region.EU, new ArrayList<Clan>()));
+						Region.EU, 19,  new ArrayList<Clan>()));
 
 		landingZones
 				.add(new LandingZone(
 						"Republic of Ireland",
 						"http://uc.worldoftanks.eu/uc/clanwars/landing/894/?type=dialog",
-						Region.EU, new ArrayList<Clan>()));
+						Region.EU, 19, new ArrayList<Clan>()));
 
 		landingZones
 				.add(new LandingZone(
 						"Brittany",
 						"http://uc.worldoftanks.eu/uc/clanwars/landing/845/?type=dialog",
-						Region.EU, new ArrayList<Clan>()));
+						Region.EU, 19, new ArrayList<Clan>()));
 
 		landingZones
 				.add(new LandingZone(
 						"Croatia",
 						"http://uc.worldoftanks.eu/uc/clanwars/landing/896/?type=dialog",
-						Region.EU, new ArrayList<Clan>()));
+						Region.EU, 19, new ArrayList<Clan>()));
 
 		landingZones
 				.add(new LandingZone(
 						"Crimea",
 						"http://uc.worldoftanks.eu/uc/clanwars/landing/893/?type=dialog",
-						Region.EU, new ArrayList<Clan>()));
+						Region.EU, 18, new ArrayList<Clan>()));
 
 	}
 
-	public void profileClan(LandingZone landingZone) {
-		findClansFromWebsite(landingZone);
-		analyzeClans(landingZone);
+	// public void profileClan(LandingZone landingZone) {
+	// findClansFromWebsite(landingZone);
+	// analyzeClans(landingZone);
+	//
+	// log.debug(landingZone.getClanList());
+	// }
 
-		log.debug(landingZone.getClanList());
+	public void profileClan(LandingZone landingZone, boolean finalRun) {
+		FutureTask<?> taskLandingZone = new FutureTask<Object>(
+				new LandingZoneAnaliser(clanCache, INTERESTED_VEHICLES,
+						landingZone, pool, finalRun), null);
+
+		pool.submit(taskLandingZone);
 	}
 
 	private void initializeHttpClient() {
