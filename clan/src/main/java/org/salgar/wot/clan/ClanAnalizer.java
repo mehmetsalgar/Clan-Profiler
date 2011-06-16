@@ -2,8 +2,10 @@ package org.salgar.wot.clan;
 
 import java.io.BufferedInputStream;
 import java.io.IOException;
+import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.http.HttpEntity;
@@ -87,7 +89,7 @@ public class ClanAnalizer implements Runnable {
 		}
 		Battle battle = new Battle();
 		battle.setProvince(landingZone.getName());
-		clan.getConcurrentBattles().add(battle);
+		//clan.getConcurrentBattles().add(battle);
 		clanCache.put(clan.getName(), clan);
 
 		findConcurrentBattles(clan);
@@ -310,11 +312,24 @@ public class ClanAnalizer implements Runnable {
 
 				String time = result.substring(
 						timeStartIndex + timeTagStart.length(), timeEndIndex);
-
 				Battle battle = new Battle();
 				battle.setProvince(province);
-				battle.setDate(new Date(
+				if (Integer.valueOf( time ).equals(0)) {
+					LandingZone landingZone = Constants.createInstance().landingZoneMap.get(battle.getProvince());
+					if (landingZone != null) {
+						String offset = System.getProperty("salgar.clanprofiler.gmt", "0");
+						int gmt_offset = Integer.valueOf(offset);
+
+						Calendar cal = Calendar.getInstance();
+						cal.set(Calendar.HOUR_OF_DAY, Integer.valueOf(landingZone.getBattleStart()).intValue() + gmt_offset);
+						cal.set(Calendar.MINUTE, 0);
+						cal.set(Calendar.SECOND, 0);
+						
+						battle.setDate(cal.getTime());
+					}
+				} else {				battle.setDate(new Date(
 						(Double.valueOf(time)).longValue() * 1000));
+				}
 				battle.setId(id);
 				clan.getConcurrentBattles().add(battle);
 

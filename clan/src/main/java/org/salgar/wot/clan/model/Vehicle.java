@@ -5,7 +5,7 @@ public class Vehicle implements Comparable<Vehicle> {
 	private Integer tier;
 	private Clazz clazz;
 	private Nation nation;
-	
+	private Integer order;
 
 	public Nation getNation() {
 		return nation;
@@ -23,12 +23,13 @@ public class Vehicle implements Comparable<Vehicle> {
 		this.clazz = clazz;
 	}
 
-	public Vehicle(String name, int tier, Clazz clazz, Nation nation) {
+	public Vehicle(String name, int tier, Clazz clazz, Nation nation, Integer order) {
 		super();
 		this.name = name;
 		this.tier = tier;
 		this.clazz = clazz;
 		this.nation = nation;
+		this.order = order;
 	}
 
 	public String getName() {
@@ -117,5 +118,13 @@ public class Vehicle implements Comparable<Vehicle> {
 		}
 		Vehicle tmp = (Vehicle) obj;
 		return tmp.getName().equals(this.name);
+	}
+
+	public Integer getOrder() {
+		return order;
+	}
+
+	public void setOrder(Integer order) {
+		this.order = order;
 	}
 }

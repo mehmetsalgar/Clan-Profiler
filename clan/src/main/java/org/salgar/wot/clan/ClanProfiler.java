@@ -15,7 +15,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.StringTokenizer;
-import java.util.Map.Entry;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.FutureTask;
@@ -46,15 +45,16 @@ import org.salgar.wot.clan.model.MemberTank;
 import org.salgar.wot.clan.model.Vehicle;
 import org.salgar.wot.clan.model.Vehicle.Clazz;
 import org.salgar.wot.clan.model.Vehicle.Nation;
+import org.salgar.wot.clan.util.VehicleOrderComparator;
 
 public class ClanProfiler {
 	private static Logger log = Logger
 			.getLogger(org.salgar.wot.clan.ClanProfiler.class);
 	private DefaultHttpClient httpClient = null;
-	private ArrayList<LandingZone> landingZones = new ArrayList<LandingZone>();
+	private ArrayList<LandingZone> landingZones = Constants.createInstance().landingZones;
 	private Map<String, Clan> clanCache = Collections
 			.synchronizedMap(new HashMap<String, Clan>());
-	private ArrayList<Vehicle> INTERESTED_VEHICLES = new Constants().INTERESTED_VEHICLES;
+	private ArrayList<Vehicle> INTERESTED_VEHICLES = Constants.createInstance().INTERESTED_VEHICLES;
 	private ExecutorService pool = null;
 	private int threadPoolCount = 1;
 
@@ -167,191 +167,7 @@ public class ClanProfiler {
 		}
 
 		pool = Executors.newFixedThreadPool(threadPoolCount);
-		landingZones
-				.add(new LandingZone(
-						"Bir Gandus",
-						"http://uc.worldoftanks.eu/uc/clanwars/landing/840/?type=dialog",
-						Region.MED, 19, new ArrayList<Clan>()));
-		landingZones
-				.add(new LandingZone(
-						"Canary Island",
-						"http://uc.worldoftanks.eu/uc/clanwars/landing/843/?type=dialog",
-						Region.MED, 19, new ArrayList<Clan>()));
-
-		landingZones
-				.add(new LandingZone(
-						"Souss-Massa-Draa",
-						"http://uc.worldoftanks.eu/uc/clanwars/landing/855/?type=dialog",
-						Region.MED, 19, new ArrayList<Clan>()));
-
-		landingZones
-				.add(new LandingZone(
-						"Balearic Islands",
-						"http://uc.worldoftanks.eu/uc/clanwars/landing/841/?type=dialog",
-						Region.MED, 19, new ArrayList<Clan>()));
-
-		landingZones
-				.add(new LandingZone(
-						"Tlemsen",
-						"http://uc.worldoftanks.eu/uc/clanwars/landing/835/?type=dialog",
-						Region.MED, 19, new ArrayList<Clan>()));
-
-		landingZones
-				.add(new LandingZone(
-						"Tébessa",
-						"http://uc.worldoftanks.eu/uc/clanwars/landing/836/?type=dialog",
-						Region.MED, 19, new ArrayList<Clan>()));
-
-		landingZones
-				.add(new LandingZone(
-						"Sicily",
-						"http://uc.worldoftanks.eu/uc/clanwars/landing/852/?type=dialog",
-						Region.MED, 19, new ArrayList<Clan>()));
-
-		landingZones
-				.add(new LandingZone(
-						"Malta",
-						"http://uc.worldoftanks.eu/uc/clanwars/landing/857/?type=dialog",
-						Region.MED, 19, new ArrayList<Clan>()));
-
-		landingZones
-				.add(new LandingZone(
-						"South Aegean",
-						"http://uc.worldoftanks.eu/uc/clanwars/landing/849/?type=dialog",
-						Region.MED, 18, new ArrayList<Clan>()));
-
-		landingZones
-				.add(new LandingZone(
-						"Matrouh",
-						"http://uc.worldoftanks.eu/uc/clanwars/landing/837/?type=dialog",
-						Region.MED, 18, new ArrayList<Clan>()));
-
-		landingZones
-				.add(new LandingZone(
-						"Beheira",
-						"http://uc.worldoftanks.eu/uc/clanwars/landing/838/?type=dialog",
-						Region.MED, 18, new ArrayList<Clan>()));
-
-		landingZones
-				.add(new LandingZone(
-						"Duba",
-						"http://uc.worldoftanks.eu/uc/clanwars/landing/886/?type=dialog",
-						Region.MED, 17, new ArrayList<Clan>()));
-
-		landingZones
-				.add(new LandingZone(
-						"Cyprus",
-						"http://uc.worldoftanks.eu/uc/clanwars/landing/833/?type=dialog",
-						Region.MED, 18, new ArrayList<Clan>()));
-
-		landingZones
-				.add(new LandingZone(
-						"Maysan",
-						"http://uc.worldoftanks.eu/uc/clanwars/landing/850/?type=dialog",
-						Region.MED, 17, new ArrayList<Clan>()));
-
-		landingZones
-				.add(new LandingZone(
-						"Crimea",
-						"http://uc.worldoftanks.eu/uc/clanwars/landing/893/?type=dialog",
-						Region.MED, 18, new ArrayList<Clan>()));
-
-		landingZones
-				.add(new LandingZone(
-						"Crotia",
-						"http://uc.worldoftanks.eu/uc/clanwars/landing/896/?type=dialog",
-						Region.MED, 19, new ArrayList<Clan>()));
-
-		landingZones
-				.add(new LandingZone(
-						"Corsica",
-						"http://uc.worldoftanks.eu/uc/clanwars/landing/846/?type=dialog",
-						Region.MED, 19, new ArrayList<Clan>()));
-
-		landingZones
-				.add(new LandingZone(
-						"Protugal",
-						"http://uc.worldoftanks.eu/uc/clanwars/landing/842/?type=dialog",
-						Region.MED, 19, new ArrayList<Clan>()));
-
-		landingZones
-				.add(new LandingZone(
-						"North Caucasus",
-						"http://uc.worldoftanks.eu/uc/clanwars/landing/864/?type=dialog",
-						Region.MED, 17, new ArrayList<Clan>()));
-
-		// Europa
-		landingZones
-				.add(new LandingZone(
-						"Kanino-Timansky District",
-						"http://uc.worldoftanks.eu/uc/clanwars/landing/883/?type=dialog",
-						Region.EU, 17, new ArrayList<Clan>()));
-
-		landingZones
-				.add(new LandingZone(
-						"Murmansk Region",
-						"http://uc.worldoftanks.eu/uc/clanwars/landing/863/?type=dialog",
-						Region.EU, 17, new ArrayList<Clan>()));
-
-		landingZones
-				.add(new LandingZone(
-						"Troms",
-						"http://uc.worldoftanks.eu/uc/clanwars/landing/860/?type=dialog",
-						Region.EU, 19, new ArrayList<Clan>()));
-
-		landingZones
-				.add(new LandingZone(
-						"Iceland",
-						"http://uc.worldoftanks.eu/uc/clanwars/landing/851/?type=dialog",
-						Region.EU, 19, new ArrayList<Clan>()));
-
-		landingZones
-				.add(new LandingZone(
-						"Courland",
-						"http://uc.worldoftanks.eu/uc/clanwars/landing/854/?type=dialog",
-						Region.EU, 18, new ArrayList<Clan>()));
-
-		landingZones
-				.add(new LandingZone(
-						"Kaliningrad Region",
-						"http://uc.worldoftanks.eu/uc/clanwars/landing/865/?type=dialog",
-						Region.EU, 18, new ArrayList<Clan>()));
-
-		landingZones
-				.add(new LandingZone(
-						"Jutland",
-						"http://uc.worldoftanks.eu/uc/clanwars/landing/834/?type=dialog",
-						Region.EU, 19, new ArrayList<Clan>()));
-
-		landingZones
-				.add(new LandingZone(
-						"Netherlands",
-						"http://uc.worldoftanks.eu/uc/clanwars/landing/859/?type=dialog",
-						Region.EU, 19,  new ArrayList<Clan>()));
-
-		landingZones
-				.add(new LandingZone(
-						"Republic of Ireland",
-						"http://uc.worldoftanks.eu/uc/clanwars/landing/894/?type=dialog",
-						Region.EU, 19, new ArrayList<Clan>()));
-
-		landingZones
-				.add(new LandingZone(
-						"Brittany",
-						"http://uc.worldoftanks.eu/uc/clanwars/landing/845/?type=dialog",
-						Region.EU, 19, new ArrayList<Clan>()));
-
-		landingZones
-				.add(new LandingZone(
-						"Croatia",
-						"http://uc.worldoftanks.eu/uc/clanwars/landing/896/?type=dialog",
-						Region.EU, 19, new ArrayList<Clan>()));
-
-		landingZones
-				.add(new LandingZone(
-						"Crimea",
-						"http://uc.worldoftanks.eu/uc/clanwars/landing/893/?type=dialog",
-						Region.EU, 18, new ArrayList<Clan>()));
+		
 
 	}
 
@@ -393,78 +209,78 @@ public class ClanProfiler {
 		}
 	}
 
-	private void findClansFromWebsite(LandingZone landingZone) {
-		HttpGet getMethod = new HttpGet(landingZone.getUrl());
+//	private void findClansFromWebsite(LandingZone landingZone) {
+//		HttpGet getMethod = new HttpGet(landingZone.getUrl());
+//
+//		getMethod
+//				.setHeader(
+//						"User-Agent",
+//						"Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US; rv:1.9.2.17) Gecko/20110420 Firefox/3.6.17");
+//
+//		getMethod.setHeader("Accept-Charset", "ISO-8859-1,utf-8;q=0.7,*;q=0.7");
+//
+//		try {
+//			HttpResponse response = httpClient.execute(getMethod);
+//
+//			HttpEntity entity = response.getEntity();
+//
+//			BufferedInputStream bis = new BufferedInputStream(
+//					entity.getContent());
+//			int length = 0;
+//			byte[] buff = new byte[1024];
+//			StringBuffer sb = new StringBuffer(1024);
+//			while ((length = bis.read(buff)) != -1) {
+//				sb.append(new String(buff, 0, length, "UTF-8"));
+//			}
+//
+//			String result = sb.toString();
+//			log.debug(result);
+//
+//			int startIndex = result
+//					.indexOf("table class=\"t-table t-landing-clan-names\"");
+//			int endIndex = result.indexOf("/table", startIndex);
+//
+//			if (startIndex == -1 || endIndex == -1) {
+//				log.info("Most probably there is no landing to this landing zone: "
+//						+ landingZone.getName()
+//						+ " : "
+//						+ landingZone.getUrl()
+//						+ "!");
+//			} else {
+//
+//				String clans = result.substring(startIndex, endIndex);
+//
+//				log.debug("clans");
+//
+//				parseClans(clans, landingZone);
+//			}
+//			findOwner(result, landingZone);
+//		} catch (Throwable t) {
+//			log.error(t.getMessage(), t);
+//		} finally {
+//
+//		}
+//	}
 
-		getMethod
-				.setHeader(
-						"User-Agent",
-						"Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US; rv:1.9.2.17) Gecko/20110420 Firefox/3.6.17");
-
-		getMethod.setHeader("Accept-Charset", "ISO-8859-1,utf-8;q=0.7,*;q=0.7");
-
-		try {
-			HttpResponse response = httpClient.execute(getMethod);
-
-			HttpEntity entity = response.getEntity();
-
-			BufferedInputStream bis = new BufferedInputStream(
-					entity.getContent());
-			int length = 0;
-			byte[] buff = new byte[1024];
-			StringBuffer sb = new StringBuffer(1024);
-			while ((length = bis.read(buff)) != -1) {
-				sb.append(new String(buff, 0, length, "UTF-8"));
-			}
-
-			String result = sb.toString();
-			log.debug(result);
-
-			int startIndex = result
-					.indexOf("table class=\"t-table t-landing-clan-names\"");
-			int endIndex = result.indexOf("/table", startIndex);
-
-			if (startIndex == -1 || endIndex == -1) {
-				log.info("Most probably there is no landing to this landing zone: "
-						+ landingZone.getName()
-						+ " : "
-						+ landingZone.getUrl()
-						+ "!");
-			} else {
-
-				String clans = result.substring(startIndex, endIndex);
-
-				log.debug("clans");
-
-				parseClans(clans, landingZone);
-			}
-			findOwner(result, landingZone);
-		} catch (Throwable t) {
-			log.error(t.getMessage(), t);
-		} finally {
-
-		}
-	}
-
-	private void findOwner(String result, LandingZone landingZone) {
-		String ownerIdentifier = "Battle with owner";
-		String ownerTag = "<div style=\"display:none;\" class=\"js-landing-tooltip-content\">";
-		String ownerEndTag = "<div class=\"landing-hint-msg\" style=\"color:#ffc56b;\"> Winner </div>";
-
-		int startOwnerPacker = result.indexOf(ownerIdentifier);
-		int endOwnerPacker = result.indexOf(ownerEndTag, startOwnerPacker);
-
-		String ownerPacker = result.substring(startOwnerPacker
-				+ ownerIdentifier.length(), endOwnerPacker);
-
-		String owner = ownerPacker.substring(
-				ownerPacker.lastIndexOf(ownerTag, endOwnerPacker)
-						+ ownerTag.length(), ownerPacker.length());
-
-		Clan ownerClan = parseClanName(owner);
-
-		landingZone.getClanList().add(0, ownerClan);
-	}
+//	private void findOwner(String result, LandingZone landingZone) {
+//		String ownerIdentifier = "Battle with owner";
+//		String ownerTag = "<div style=\"display:none;\" class=\"js-landing-tooltip-content\">";
+//		String ownerEndTag = "<div class=\"landing-hint-msg\" style=\"color:#ffc56b;\"> Winner </div>";
+//
+//		int startOwnerPacker = result.indexOf(ownerIdentifier);
+//		int endOwnerPacker = result.indexOf(ownerEndTag, startOwnerPacker);
+//
+//		String ownerPacker = result.substring(startOwnerPacker
+//				+ ownerIdentifier.length(), endOwnerPacker);
+//
+//		String owner = ownerPacker.substring(
+//				ownerPacker.lastIndexOf(ownerTag, endOwnerPacker)
+//						+ ownerTag.length(), ownerPacker.length());
+//
+//		Clan ownerClan = parseClanName(owner);
+//
+//		landingZone.getClanList().add(0, ownerClan);
+//	}
 
 	// private void analyzeClans(LandingZone landingZone) {
 	// for(int i = 0, n = landingZone.getClanList().size(); i < n; i++) {
@@ -552,110 +368,110 @@ public class ClanProfiler {
 
 	}
 
-	private void findConcurrentBattles(Clan clan) {
-		HttpGet getConcurrentBattles = null;
+//	private void findConcurrentBattles(Clan clan) {
+//		HttpGet getConcurrentBattles = null;
+//
+//		getConcurrentBattles = new HttpGet(
+//				"http://uc.worldoftanks.eu/uc/clans/"
+//						+ clan.getId()
+//						+ "/battles/?type=table&offset=0&limit=1000&order_by=time&search=&echo=1&id=js-battles-table");
+//
+//		getConcurrentBattles
+//				.setHeader(
+//						"User-Agent",
+//						"Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US; rv:1.9.2.17) Gecko/20110420 Firefox/3.6.17");
+//		getConcurrentBattles.setHeader("X-Requested-With", "XMLHttpRequest");
+//		// http://http://uc.worldoftanks.eu/uc/clans/500000083/battles/
+//
+//		try {
+//			HttpResponse response = httpClient.execute(getConcurrentBattles);
+//
+//			HttpEntity entity = response.getEntity();
+//
+//			BufferedInputStream bis = new BufferedInputStream(
+//					entity.getContent());
+//			int length = 0;
+//			byte[] buff = new byte[1024];
+//			StringBuffer sb = new StringBuffer(1024);
+//			while ((length = bis.read(buff)) != -1) {
+//				sb.append(new String(buff, 0, length, "UTF-8"));
+//			}
+//
+//			String result = sb.toString();
+//			log.debug(result);
+//
+//			String provinceTagStart = "\"name\":\"";
+//			String provinceTagEnd = "\"";
+//
+//			int tagStart = 0;
+//
+//			while ((tagStart = result.indexOf(provinceTagStart, tagStart)) != -1) {
+//
+//				int tagEnd = result.indexOf(provinceTagEnd, tagStart
+//						+ provinceTagStart.length());
+//
+//				String province = result.substring(
+//						tagStart + provinceTagStart.length(), tagEnd);
+//
+//				String idTagStart = "\"id\":\"";
+//				String idTagEnd = "\"}";
+//
+//				int idStartIndex = result.indexOf(idTagStart, tagEnd);
+//				int idEndIndex = result.indexOf(idTagEnd, idStartIndex
+//						+ idTagStart.length());
+//
+//				String id = result.substring(
+//						idStartIndex + idTagStart.length(), idEndIndex);
+//
+//				String timeTagStart = "\"time\":";
+//				String timeTagEnd = "}";
+//
+//				int timeStartIndex = result.indexOf(timeTagStart, tagEnd);
+//				int timeEndIndex = result.indexOf(timeTagEnd, timeStartIndex
+//						+ timeTagStart.length());
+//
+//				String time = result.substring(
+//						timeStartIndex + timeTagStart.length(), timeEndIndex);
+//
+//				Battle battle = new Battle();
+//				battle.setProvince(province);
+//				battle.setDate(new Date(
+//						(Double.valueOf(time)).longValue() * 1000));
+//				battle.setId(id);
+//				clan.getConcurrentBattles().add(battle);
+//
+//				tagStart++;
+//			}
+//
+//		} catch (ClientProtocolException e) {
+//			log.error(e.getMessage(), e);
+//		} catch (IOException e) {
+//			log.error(e.getMessage(), e);
+//		}
+//	}
 
-		getConcurrentBattles = new HttpGet(
-				"http://uc.worldoftanks.eu/uc/clans/"
-						+ clan.getId()
-						+ "/battles/?type=table&offset=0&limit=1000&order_by=time&search=&echo=1&id=js-battles-table");
-
-		getConcurrentBattles
-				.setHeader(
-						"User-Agent",
-						"Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US; rv:1.9.2.17) Gecko/20110420 Firefox/3.6.17");
-		getConcurrentBattles.setHeader("X-Requested-With", "XMLHttpRequest");
-		// http://http://uc.worldoftanks.eu/uc/clans/500000083/battles/
-
-		try {
-			HttpResponse response = httpClient.execute(getConcurrentBattles);
-
-			HttpEntity entity = response.getEntity();
-
-			BufferedInputStream bis = new BufferedInputStream(
-					entity.getContent());
-			int length = 0;
-			byte[] buff = new byte[1024];
-			StringBuffer sb = new StringBuffer(1024);
-			while ((length = bis.read(buff)) != -1) {
-				sb.append(new String(buff, 0, length, "UTF-8"));
-			}
-
-			String result = sb.toString();
-			log.debug(result);
-
-			String provinceTagStart = "\"name\":\"";
-			String provinceTagEnd = "\"";
-
-			int tagStart = 0;
-
-			while ((tagStart = result.indexOf(provinceTagStart, tagStart)) != -1) {
-
-				int tagEnd = result.indexOf(provinceTagEnd, tagStart
-						+ provinceTagStart.length());
-
-				String province = result.substring(
-						tagStart + provinceTagStart.length(), tagEnd);
-
-				String idTagStart = "\"id\":\"";
-				String idTagEnd = "\"}";
-
-				int idStartIndex = result.indexOf(idTagStart, tagEnd);
-				int idEndIndex = result.indexOf(idTagEnd, idStartIndex
-						+ idTagStart.length());
-
-				String id = result.substring(
-						idStartIndex + idTagStart.length(), idEndIndex);
-
-				String timeTagStart = "\"time\":";
-				String timeTagEnd = "}";
-
-				int timeStartIndex = result.indexOf(timeTagStart, tagEnd);
-				int timeEndIndex = result.indexOf(timeTagEnd, timeStartIndex
-						+ timeTagStart.length());
-
-				String time = result.substring(
-						timeStartIndex + timeTagStart.length(), timeEndIndex);
-
-				Battle battle = new Battle();
-				battle.setProvince(province);
-				battle.setDate(new Date(
-						(Double.valueOf(time)).longValue() * 1000));
-				battle.setId(id);
-				clan.getConcurrentBattles().add(battle);
-
-				tagStart++;
-			}
-
-		} catch (ClientProtocolException e) {
-			log.error(e.getMessage(), e);
-		} catch (IOException e) {
-			log.error(e.getMessage(), e);
-		}
-	}
-
-	private void parseClans(String clans, LandingZone landingZone) {
-		int clanStart = 0;
-
-		String clanTag = "<div class=\"b-ellipsis\">";
-		while ((clanStart = clans.indexOf(clanTag, clanStart)) != -1) {
-			int clanEndIndex = clans.indexOf("</div>", clanStart);
-			String clanName = clans.substring(clanStart + clanTag.length(),
-					clanEndIndex);
-			Clan clan = parseClanName(clanName);
-			Clan cachedClan = null;
-			if ((cachedClan = clanCache.get(clan.getName())) != null) {
-				clan = cachedClan;
-				Battle battle = new Battle();
-				battle.setProvince(landingZone.getName());
-				clan.getConcurrentBattles().add(battle);
-			}
-			landingZone.getClanList().add(clan);
-			clanStart++;
-			log.info("Clan found: " + clan.getName());
-		}
-		log.debug(landingZone.getClanList());
-	}
+//	private void parseClans(String clans, LandingZone landingZone) {
+//		int clanStart = 0;
+//
+//		String clanTag = "<div class=\"b-ellipsis\">";
+//		while ((clanStart = clans.indexOf(clanTag, clanStart)) != -1) {
+//			int clanEndIndex = clans.indexOf("</div>", clanStart);
+//			String clanName = clans.substring(clanStart + clanTag.length(),
+//					clanEndIndex);
+//			Clan clan = parseClanName(clanName);
+//			Clan cachedClan = null;
+//			if ((cachedClan = clanCache.get(clan.getName())) != null) {
+//				clan = cachedClan;
+//				Battle battle = new Battle();
+//				battle.setProvince(landingZone.getName());
+//				clan.getConcurrentBattles().add(battle);
+//			}
+//			landingZone.getClanList().add(clan);
+//			clanStart++;
+//			log.info("Clan found: " + clan.getName());
+//		}
+//		log.debug(landingZone.getClanList());
+//	}
 
 	private Clan parseClanName(String clanName) {
 		Clan clan = new Clan();
@@ -722,157 +538,157 @@ public class ClanProfiler {
 		}
 	}
 
-	private void findMembers(Clan clan) {
-		HttpGet getClanMembers = null;
+//	private void findMembers(Clan clan) {
+//		HttpGet getClanMembers = null;
+//
+//		getClanMembers = new HttpGet(
+//				"http://uc.worldoftanks.eu/uc/clans/"
+//						+ clan.getId()
+//						+ "/members/?type=table&offset=0&limit=100&order_by=name&search=&echo=1&id=clan_members_index");
+//
+//		getClanMembers
+//				.setHeader(
+//						"User-Agent",
+//						"Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US; rv:1.9.2.17) Gecko/20110420 Firefox/3.6.17");
+//		getClanMembers.setHeader("X-Requested-With", "XMLHttpRequest");
+//
+//		try {
+//			HttpResponse response = httpClient.execute(getClanMembers);
+//
+//			HttpEntity entity = response.getEntity();
+//
+//			BufferedInputStream bis = new BufferedInputStream(
+//					entity.getContent());
+//			int length = 0;
+//			byte[] buff = new byte[1024];
+//			StringBuffer sb = new StringBuffer(1024);
+//			while ((length = bis.read(buff)) != -1) {
+//				sb.append(new String(buff, 0, length, "UTF-8"));
+//			}
+//
+//			String result = sb.toString();
+//
+//			parseMember(result, clan);
+//
+//			log.debug(result);
+//		} catch (ClientProtocolException e) {
+//			log.error(e.getMessage(), e);
+//		} catch (IOException e) {
+//			log.error(e.getMessage(), e);
+//		}
+//	}
 
-		getClanMembers = new HttpGet(
-				"http://uc.worldoftanks.eu/uc/clans/"
-						+ clan.getId()
-						+ "/members/?type=table&offset=0&limit=100&order_by=name&search=&echo=1&id=clan_members_index");
+//	private void parseMember(String members, Clan clan) {
+//		String accountTag = "\"account_id\":";
+//		int startAccount = 0;
+//		while ((startAccount = members.indexOf(accountTag, startAccount)) != -1) {
+//			int endAccount = members.indexOf(",", startAccount);
+//			String account_id = members.substring(
+//					startAccount + accountTag.length(), endAccount);
+//
+//			ClanMember clanMember = new ClanMember();
+//			clanMember.setId(account_id);
+//
+//			String roleTag = "\"role\":";
+//			int startRole = members.indexOf(roleTag, startAccount);
+//			int endRole = members.indexOf("\",", startRole);
+//			String role = members.substring(startRole + roleTag.length() + 1,
+//					endRole);
+//			clanMember.setRole(role);
+//
+//			String nameTag = "\"name\":";
+//			int startName = members.indexOf(nameTag, startAccount);
+//			int endName = members.indexOf("\"}", startAccount);
+//			String name = members.substring(startName + nameTag.length() + 1,
+//					endName);
+//			clanMember.setName(name);
+//
+//			clan.getClanMembers().add(clanMember);
+//			startAccount++;
+//			log.info("Member:" + clanMember.getName() + " found for clan: "
+//					+ clan.getName());
+//		}
+//	}
 
-		getClanMembers
-				.setHeader(
-						"User-Agent",
-						"Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US; rv:1.9.2.17) Gecko/20110420 Firefox/3.6.17");
-		getClanMembers.setHeader("X-Requested-With", "XMLHttpRequest");
+//	private void parseMemberDetails(ClanMember clanMember) {
+//		HttpGet getClanMembersDetails = null;
+//
+//		String sleep = System.getProperty("salgar.clanprofiler.sleep", "0");
+//
+//		try {
+//			Thread.sleep(Long.valueOf(sleep));
+//		} catch (InterruptedException e) {
+//			log.error(e.getMessage(), e);
+//		}
+//
+//		getClanMembersDetails = new HttpGet(
+//				"http://uc.worldoftanks.eu/uc/accounts/" + clanMember.getId()
+//						+ "-" + clanMember.getName() + "/");
+//		getClanMembersDetails
+//				.setHeader(
+//						"User-Agent",
+//						"Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US; rv:1.9.2.17) Gecko/20110420 Firefox/3.6.17");
+//
+//		try {
+//			HttpResponse response = httpClient.execute(getClanMembersDetails);
+//
+//			HttpEntity entity = response.getEntity();
+//
+//			BufferedInputStream bis = new BufferedInputStream(
+//					entity.getContent());
+//			int length = 0;
+//			byte[] buff = new byte[1024];
+//			StringBuffer sb = new StringBuffer(1024);
+//			while ((length = bis.read(buff)) != -1) {
+//				sb.append(new String(buff, 0, length, "UTF-8"));
+//			}
+//
+//			String result = sb.toString();
+//
+//			parseTanks(result, clanMember);
+//
+//			log.debug(result);
+//		} catch (ClientProtocolException e) {
+//			log.error(e.getMessage(), e);
+//		} catch (IOException e) {
+//			log.error(e.getMessage(), e);
+//		}
+//	}
 
-		try {
-			HttpResponse response = httpClient.execute(getClanMembers);
-
-			HttpEntity entity = response.getEntity();
-
-			BufferedInputStream bis = new BufferedInputStream(
-					entity.getContent());
-			int length = 0;
-			byte[] buff = new byte[1024];
-			StringBuffer sb = new StringBuffer(1024);
-			while ((length = bis.read(buff)) != -1) {
-				sb.append(new String(buff, 0, length, "UTF-8"));
-			}
-
-			String result = sb.toString();
-
-			parseMember(result, clan);
-
-			log.debug(result);
-		} catch (ClientProtocolException e) {
-			log.error(e.getMessage(), e);
-		} catch (IOException e) {
-			log.error(e.getMessage(), e);
-		}
-	}
-
-	private void parseMember(String members, Clan clan) {
-		String accountTag = "\"account_id\":";
-		int startAccount = 0;
-		while ((startAccount = members.indexOf(accountTag, startAccount)) != -1) {
-			int endAccount = members.indexOf(",", startAccount);
-			String account_id = members.substring(
-					startAccount + accountTag.length(), endAccount);
-
-			ClanMember clanMember = new ClanMember();
-			clanMember.setId(account_id);
-
-			String roleTag = "\"role\":";
-			int startRole = members.indexOf(roleTag, startAccount);
-			int endRole = members.indexOf("\",", startRole);
-			String role = members.substring(startRole + roleTag.length() + 1,
-					endRole);
-			clanMember.setRole(role);
-
-			String nameTag = "\"name\":";
-			int startName = members.indexOf(nameTag, startAccount);
-			int endName = members.indexOf("\"}", startAccount);
-			String name = members.substring(startName + nameTag.length() + 1,
-					endName);
-			clanMember.setName(name);
-
-			clan.getClanMembers().add(clanMember);
-			startAccount++;
-			log.info("Member:" + clanMember.getName() + " found for clan: "
-					+ clan.getName());
-		}
-	}
-
-	private void parseMemberDetails(ClanMember clanMember) {
-		HttpGet getClanMembersDetails = null;
-
-		String sleep = System.getProperty("salgar.clanprofiler.sleep", "0");
-
-		try {
-			Thread.sleep(Long.valueOf(sleep));
-		} catch (InterruptedException e) {
-			log.error(e.getMessage(), e);
-		}
-
-		getClanMembersDetails = new HttpGet(
-				"http://uc.worldoftanks.eu/uc/accounts/" + clanMember.getId()
-						+ "-" + clanMember.getName() + "/");
-		getClanMembersDetails
-				.setHeader(
-						"User-Agent",
-						"Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US; rv:1.9.2.17) Gecko/20110420 Firefox/3.6.17");
-
-		try {
-			HttpResponse response = httpClient.execute(getClanMembersDetails);
-
-			HttpEntity entity = response.getEntity();
-
-			BufferedInputStream bis = new BufferedInputStream(
-					entity.getContent());
-			int length = 0;
-			byte[] buff = new byte[1024];
-			StringBuffer sb = new StringBuffer(1024);
-			while ((length = bis.read(buff)) != -1) {
-				sb.append(new String(buff, 0, length, "UTF-8"));
-			}
-
-			String result = sb.toString();
-
-			parseTanks(result, clanMember);
-
-			log.debug(result);
-		} catch (ClientProtocolException e) {
-			log.error(e.getMessage(), e);
-		} catch (IOException e) {
-			log.error(e.getMessage(), e);
-		}
-	}
-
-	private void parseTanks(String result, ClanMember clanMember) {
-		String valueTag = "right value\">";
-		String endTag = "</td>";
-		for (Vehicle tank : INTERESTED_VEHICLES) {
-			int startTank = result.indexOf(">" + tank.getName() + "<");
-
-			if (startTank >= 0) {
-				MemberTank memberTank = new MemberTank();
-
-				memberTank.setVehicle(tank);
-				log.info("Tank: " + memberTank.getVehicle().getName()
-						+ " for clan mamber: " + clanMember.getName()
-						+ " found ");
-
-				int startBattle = result.indexOf(valueTag, startTank);
-				int endBattle = result.indexOf(endTag, startBattle);
-
-				String battle = result.substring(
-						startBattle + valueTag.length(), endBattle);
-				memberTank.setBattles(battle);
-
-				startBattle++;
-
-				int startVictories = result.indexOf(valueTag, startBattle);
-				int endVictories = result.indexOf(endTag, startVictories);
-
-				String victories = result.substring(
-						startVictories + valueTag.length(), endVictories);
-				memberTank.setVictories(victories);
-
-				clanMember.getMemberTanks().add(memberTank);
-			}
-		}
-	}
+//	private void parseTanks(String result, ClanMember clanMember) {
+//		String valueTag = "right value\">";
+//		String endTag = "</td>";
+//		for (Vehicle tank : INTERESTED_VEHICLES) {
+//			int startTank = result.indexOf(">" + tank.getName() + "<");
+//
+//			if (startTank >= 0) {
+//				MemberTank memberTank = new MemberTank();
+//
+//				memberTank.setVehicle(tank);
+//				log.info("Tank: " + memberTank.getVehicle().getName()
+//						+ " for clan mamber: " + clanMember.getName()
+//						+ " found ");
+//
+//				int startBattle = result.indexOf(valueTag, startTank);
+//				int endBattle = result.indexOf(endTag, startBattle);
+//
+//				String battle = result.substring(
+//						startBattle + valueTag.length(), endBattle);
+//				memberTank.setBattles(battle);
+//
+//				startBattle++;
+//
+//				int startVictories = result.indexOf(valueTag, startBattle);
+//				int endVictories = result.indexOf(endTag, startVictories);
+//
+//				String victories = result.substring(
+//						startVictories + valueTag.length(), endVictories);
+//				memberTank.setVictories(victories);
+//
+//				clanMember.getMemberTanks().add(memberTank);
+//			}
+//		}
+//	}
 
 	private void writeExcel(List<LandingZone> landingZones) {
 		Workbook wb = new XSSFWorkbook();
@@ -1046,16 +862,19 @@ public class ClanProfiler {
 				}
 			}
 			if (clanTankPopulation.isEmpty() == false) {
+				ArrayList<Vehicle> orderedList = new ArrayList<Vehicle>(INTERESTED_VEHICLES);
+				Collections.sort(orderedList, new VehicleOrderComparator());
 				i++;
 				Row tankPopulationRow = sh.createRow(i);
 				int y = 1;
 
-				for (Entry<Vehicle, Integer> entry : clanTankPopulation
-						.entrySet()) {
+				for (Vehicle vehicle : orderedList) {
 					Cell tankPopulation = tankPopulationRow.createCell(y);
-					tankPopulation.setCellValue(entry.getKey().getName() + ": "
-							+ entry.getValue());
-					y++;
+					if (clanTankPopulation.get(vehicle) != null) {
+						tankPopulation.setCellValue(vehicle.getName() + ": "
+								+ clanTankPopulation.get(vehicle));
+						y++;
+					}					
 				}
 				i++;
 				i++;
