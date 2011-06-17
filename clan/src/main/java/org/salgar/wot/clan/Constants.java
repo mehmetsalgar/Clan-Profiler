@@ -114,191 +114,191 @@ public class Constants {
 				.add(new LandingZone(
 						"Bir Gandus",
 						"http://uc.worldoftanks.eu/uc/clanwars/landing/840/?type=dialog",
-						Region.MED, 19, new ArrayList<Clan>()));
+						Region.MED, 19, "EH_04", new ArrayList<Clan>()));
 		landingZones
 				.add(new LandingZone(
 						"Canary Island",
 						"http://uc.worldoftanks.eu/uc/clanwars/landing/843/?type=dialog",
-						Region.MED, 19, new ArrayList<Clan>()));
+						Region.MED, 19, "ES_12", new ArrayList<Clan>()));
 
 		landingZones
 				.add(new LandingZone(
 						"Souss-Massa-Draa",
 						"http://uc.worldoftanks.eu/uc/clanwars/landing/855/?type=dialog",
-						Region.MED, 19, new ArrayList<Clan>()));
+						Region.MED, 19, "MA_02", new ArrayList<Clan>()));
 
 		landingZones
 				.add(new LandingZone(
 						"Balearic Islands",
 						"http://uc.worldoftanks.eu/uc/clanwars/landing/841/?type=dialog",
-						Region.MED, 19, new ArrayList<Clan>()));
+						Region.MED, 19, "ES_10", new ArrayList<Clan>()));
 
 		landingZones
 				.add(new LandingZone(
 						"Tlemsen",
 						"http://uc.worldoftanks.eu/uc/clanwars/landing/835/?type=dialog",
-						Region.MED, 19, new ArrayList<Clan>()));
+						Region.MED, 19, "DZ_01", new ArrayList<Clan>()));
 
 		landingZones
 				.add(new LandingZone(
 						"Tébessa",
 						"http://uc.worldoftanks.eu/uc/clanwars/landing/836/?type=dialog",
-						Region.MED, 19, new ArrayList<Clan>()));
+						Region.MED, 19, "DZ_04", new ArrayList<Clan>()));
 
 		landingZones
 				.add(new LandingZone(
 						"Sicily",
 						"http://uc.worldoftanks.eu/uc/clanwars/landing/852/?type=dialog",
-						Region.MED, 19, new ArrayList<Clan>()));
+						Region.MED, 19, "IT_13", new ArrayList<Clan>()));
 
 		landingZones
 				.add(new LandingZone(
 						"Malta",
 						"http://uc.worldoftanks.eu/uc/clanwars/landing/857/?type=dialog",
-						Region.MED, 19, new ArrayList<Clan>()));
+						Region.MED, 19, "MT_01", new ArrayList<Clan>()));
 
 		landingZones
 				.add(new LandingZone(
 						"South Aegean",
 						"http://uc.worldoftanks.eu/uc/clanwars/landing/849/?type=dialog",
-						Region.MED, 18, new ArrayList<Clan>()));
+						Region.MED, 18, "GR_05", new ArrayList<Clan>()));
 
 		landingZones
 				.add(new LandingZone(
 						"Matrouh",
 						"http://uc.worldoftanks.eu/uc/clanwars/landing/837/?type=dialog",
-						Region.MED, 18, new ArrayList<Clan>()));
+						Region.MED, 18, "EG_01", new ArrayList<Clan>()));
 
 		landingZones
 				.add(new LandingZone(
 						"Beheira",
 						"http://uc.worldoftanks.eu/uc/clanwars/landing/838/?type=dialog",
-						Region.MED, 18, new ArrayList<Clan>()));
+						Region.MED, 18, "EG_03", new ArrayList<Clan>()));
 
 		landingZones
 				.add(new LandingZone(
 						"Duba",
 						"http://uc.worldoftanks.eu/uc/clanwars/landing/886/?type=dialog",
-						Region.MED, 17, new ArrayList<Clan>()));
+						Region.MED, 17, "SA_03", new ArrayList<Clan>()));
 
 		landingZones
 				.add(new LandingZone(
 						"Cyprus",
 						"http://uc.worldoftanks.eu/uc/clanwars/landing/833/?type=dialog",
-						Region.MED, 18, new ArrayList<Clan>()));
+						Region.MED, 18, "CY_01", new ArrayList<Clan>()));
 
 		landingZones
 				.add(new LandingZone(
 						"Maysan",
 						"http://uc.worldoftanks.eu/uc/clanwars/landing/850/?type=dialog",
-						Region.MED, 17, new ArrayList<Clan>()));
+						Region.MED, 17, "IQ_11", new ArrayList<Clan>()));
 
 		landingZones
 				.add(new LandingZone(
 						"Crimea",
 						"http://uc.worldoftanks.eu/uc/clanwars/landing/893/?type=dialog",
-						Region.MED, 18, new ArrayList<Clan>()));
+						Region.MED, 18, "UA_10", new ArrayList<Clan>()));
 
 		landingZones
 				.add(new LandingZone(
 						"Crotia",
 						"http://uc.worldoftanks.eu/uc/clanwars/landing/896/?type=dialog",
-						Region.MED, 19, new ArrayList<Clan>()));
+						Region.MED, 19, "YU_02", new ArrayList<Clan>()));
 
 		landingZones
 				.add(new LandingZone(
 						"Corsica",
 						"http://uc.worldoftanks.eu/uc/clanwars/landing/846/?type=dialog",
-						Region.MED, 19, new ArrayList<Clan>()));
+						Region.MED, 19, "FR_18", new ArrayList<Clan>()));
 
 		landingZones
 				.add(new LandingZone(
 						"Portugal",
 						"http://uc.worldoftanks.eu/uc/clanwars/landing/842/?type=dialog",
-						Region.MED, 19, new ArrayList<Clan>()));
+						Region.MED, 19, "ES_11", new ArrayList<Clan>()));
 
 		landingZones
 				.add(new LandingZone(
 						"North Caucasus",
 						"http://uc.worldoftanks.eu/uc/clanwars/landing/864/?type=dialog",
-						Region.MED, 17, new ArrayList<Clan>()));
+						Region.MED, 17, "RU_05", new ArrayList<Clan>()));
 
 		// Europa
 		landingZones
 				.add(new LandingZone(
 						"Kanino-Timansky District",
 						"http://uc.worldoftanks.eu/uc/clanwars/landing/883/?type=dialog",
-						Region.EU, 17, new ArrayList<Clan>()));
+						Region.EU, 17, "RU_42", new ArrayList<Clan>()));
 
 		landingZones
 				.add(new LandingZone(
 						"Murmansk Region",
 						"http://uc.worldoftanks.eu/uc/clanwars/landing/863/?type=dialog",
-						Region.EU, 17, new ArrayList<Clan>()));
+						Region.EU, 17, "RU_04", new ArrayList<Clan>()));
 
 		landingZones
 				.add(new LandingZone(
 						"Troms",
 						"http://uc.worldoftanks.eu/uc/clanwars/landing/860/?type=dialog",
-						Region.EU, 19, new ArrayList<Clan>()));
+						Region.EU, 19, "NO_02", new ArrayList<Clan>()));
 
 		landingZones
 				.add(new LandingZone(
 						"Iceland",
 						"http://uc.worldoftanks.eu/uc/clanwars/landing/851/?type=dialog",
-						Region.EU, 19, new ArrayList<Clan>()));
+						Region.EU, 19, "IS_01", new ArrayList<Clan>()));
 
 		landingZones
 				.add(new LandingZone(
 						"Courland",
 						"http://uc.worldoftanks.eu/uc/clanwars/landing/854/?type=dialog",
-						Region.EU, 18, new ArrayList<Clan>()));
+						Region.EU, 18, "LV_02", new ArrayList<Clan>()));
 
 		landingZones
 				.add(new LandingZone(
 						"Kaliningrad Region",
 						"http://uc.worldoftanks.eu/uc/clanwars/landing/865/?type=dialog",
-						Region.EU, 18, new ArrayList<Clan>()));
+						Region.EU, 18, "RU_10", new ArrayList<Clan>()));
 
 		landingZones
 				.add(new LandingZone(
 						"Jutland",
 						"http://uc.worldoftanks.eu/uc/clanwars/landing/834/?type=dialog",
-						Region.EU, 19, new ArrayList<Clan>()));
+						Region.EU, 19, "DK_01", new ArrayList<Clan>()));
 
 		landingZones
 				.add(new LandingZone(
 						"Netherlands",
 						"http://uc.worldoftanks.eu/uc/clanwars/landing/859/?type=dialog",
-						Region.EU, 19, new ArrayList<Clan>()));
+						Region.EU, 19, "NL_01", new ArrayList<Clan>()));
 
 		landingZones
 				.add(new LandingZone(
 						"Republic of Ireland",
 						"http://uc.worldoftanks.eu/uc/clanwars/landing/894/?type=dialog",
-						Region.EU, 19, new ArrayList<Clan>()));
+						Region.EU, 19, "UK_07", new ArrayList<Clan>()));
 
 		landingZones
 				.add(new LandingZone(
 						"Brittany",
 						"http://uc.worldoftanks.eu/uc/clanwars/landing/845/?type=dialog",
-						Region.EU, 19, new ArrayList<Clan>()));
+						Region.EU, 19, "FR_15", new ArrayList<Clan>()));
 
 		landingZones
 				.add(new LandingZone(
 						"Croatia",
 						"http://uc.worldoftanks.eu/uc/clanwars/landing/896/?type=dialog",
-						Region.EU, 19, new ArrayList<Clan>()));
+						Region.EU, 19, "YU_02", new ArrayList<Clan>()));
 
 		landingZones
 				.add(new LandingZone(
 						"Crimea",
 						"http://uc.worldoftanks.eu/uc/clanwars/landing/893/?type=dialog",
-						Region.EU, 18, new ArrayList<Clan>()));
+						Region.EU, 18, "UA_10", new ArrayList<Clan>()));
 
 		
 		for (LandingZone landingZone : this.landingZones) {
-			landingZoneMap.put(landingZone.getName(), landingZone);
+			landingZoneMap.put(landingZone.getTag(), landingZone);
 		}
 	}
 }
