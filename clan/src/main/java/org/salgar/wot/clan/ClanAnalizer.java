@@ -5,7 +5,6 @@ import java.io.IOException;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.http.HttpEntity;
@@ -314,7 +313,7 @@ public class ClanAnalizer implements Runnable {
 						timeStartIndex + timeTagStart.length(), timeEndIndex);
 				Battle battle = new Battle();
 				battle.setProvince(province);
-				if (Integer.valueOf( time ).equals(0)) {
+				if ("0".equals(time)) {
 					LandingZone landingZone = Constants.createInstance().landingZoneMap.get(battle.getProvince());
 					if (landingZone != null) {
 						String offset = System.getProperty("salgar.clanprofiler.gmt", "0");
@@ -327,7 +326,8 @@ public class ClanAnalizer implements Runnable {
 						
 						battle.setDate(cal.getTime());
 					}
-				} else {				battle.setDate(new Date(
+				} else {				
+					battle.setDate(new Date(
 						(Double.valueOf(time)).longValue() * 1000));
 				}
 				battle.setId(id);

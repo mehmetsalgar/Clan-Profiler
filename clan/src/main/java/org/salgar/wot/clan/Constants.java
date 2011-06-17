@@ -213,7 +213,7 @@ public class Constants {
 
 		landingZones
 				.add(new LandingZone(
-						"Protugal",
+						"Portugal",
 						"http://uc.worldoftanks.eu/uc/clanwars/landing/842/?type=dialog",
 						Region.MED, 19, new ArrayList<Clan>()));
 
