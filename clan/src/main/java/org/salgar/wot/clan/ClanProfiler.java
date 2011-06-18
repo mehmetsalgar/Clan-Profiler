@@ -111,6 +111,10 @@ public class ClanProfiler {
 	}
 
 	public List<LandingZone> findLandingZones(String zones) {
+		String offset = System.getProperty("salgar.clanprofiler.gmt", "0");
+		int gmt_offset = Integer.valueOf(offset);
+		int hour = Calendar.getInstance().get(Calendar.HOUR_OF_DAY);
+		
 		StringTokenizer tokenizer = new StringTokenizer(zones, ",");
 
 		List<LandingZone> choosenZones = new ArrayList<LandingZone>();
@@ -118,7 +122,7 @@ public class ClanProfiler {
 			String landingZone = tokenizer.nextToken();
 
 			for (LandingZone zone : landingZones) {
-				if (landingZone.equals(zone.getName())) {
+				if (landingZone.equals(zone.getName()) && zone.getBattleStart() + gmt_offset > hour) {
 					choosenZones.add(zone);
 					break;
 				}
@@ -136,7 +140,7 @@ public class ClanProfiler {
 		int hour = Calendar.getInstance().get(Calendar.HOUR_OF_DAY);
 		if ("ALL".equals(region)) {
 			return landingZones;
-		} else if (Region.MED.getName().equals(region)) {
+		} else if (Region.MED.getName().equals(region) || Region.MED_EU.equals(region)) {
 			List<LandingZone> meditereanZones = new ArrayList<LandingZone>();
 			for (LandingZone landingZone : landingZones) {
 				if (Region.MED.equals(landingZone.getRegion())
@@ -145,7 +149,7 @@ public class ClanProfiler {
 				}
 			}
 			return meditereanZones;
-		} else if (Region.EU.getName().equals(region)) {
+		} else if (Region.EU.getName().equals(region) || Region.MED_EU.equals(region)) {
 			List<LandingZone> europeanZones = new ArrayList<LandingZone>();
 			for (LandingZone landingZone : landingZones) {
 				if (Region.EU.equals(landingZone.getRegion())

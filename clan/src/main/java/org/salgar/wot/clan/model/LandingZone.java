@@ -50,7 +50,7 @@ public class LandingZone {
 	}
 	
 	public enum Region {
-		EU("EU"), MED("MED");
+		EU("EU"), MED("MED"), MED_EU("MED_EU");
 		
 		private String name;
 		
