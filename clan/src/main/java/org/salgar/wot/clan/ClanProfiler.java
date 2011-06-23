@@ -32,6 +32,8 @@ import org.apache.http.conn.params.ConnRoutePNames;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.log4j.Logger;
 import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellStyle;
+import org.apache.poi.ss.usermodel.IndexedColors;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -702,6 +704,8 @@ public class ClanProfiler {
 	// }
 
 	private void writeExcel(List<LandingZone> landingZones) {
+		String offset = System.getProperty("salgar.clanprofiler.gmt", "0");
+		int gmt_offset = Integer.valueOf(offset);
 		Workbook wb = new XSSFWorkbook();
 		SimpleDateFormat sdf = new SimpleDateFormat("MM_dd_HH_mm_ss");
 
@@ -716,8 +720,8 @@ public class ClanProfiler {
 
 		List<Clan> clansWithConcurrentBattles = new ArrayList<Clan>();
 		for (LandingZone landingZone : landingZones) {
-			Sheet sh = wb.createSheet(landingZone.getName());
-			writeExcel(landingZone, sh);
+			Sheet sh = wb.createSheet(landingZone.getName()+ " (" + (landingZone.getBattleStart() + gmt_offset) + ")");
+			writeExcel(landingZone, sh, wb);
 
 			for (Clan clan : landingZone.getClanList()) {
 				if (clan.getConcurrentBattles().isEmpty() == false) {
@@ -771,7 +775,7 @@ public class ClanProfiler {
 		return sb.toString();
 	}
 
-	public void writeExcel(LandingZone landingZone, Sheet sh) {
+	public void writeExcel(LandingZone landingZone, Sheet sh, Workbook wb) {
 		int i = 0;
 		for (Clan clan : landingZone.getClanList()) {
 			Map<Vehicle, TankPopulation> clanTankPopulation = new HashMap<Vehicle, TankPopulation>();
@@ -841,9 +845,12 @@ public class ClanProfiler {
 							}
 						}
 						if (firstTime == true) {
+							CellStyle style = wb.createCellStyle();
+							style.setFillBackgroundColor(IndexedColors.RED.getIndex());
 							Cell tanksCell = memberRow.createCell(2);
 							tanksCell.setCellValue(memberTank.getVehicle()
 									.getName());
+							tanksCell.setCellStyle(style);
 							Cell battlesCell = memberRow.createCell(3);
 							battlesCell.setCellValue(memberTank.getBattles());
 							Cell victoriesCell = memberRow.createCell(4);
