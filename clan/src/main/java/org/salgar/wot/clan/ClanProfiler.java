@@ -799,7 +799,7 @@ public class ClanProfiler {
 					boolean firstTime = true;
 					Collections.sort(clanMember.getMemberTanks());
 					for (MemberTank memberTank : clanMember.getMemberTanks()) {
-						if (memberTank.getVehicle().getTier() >= 9
+						if (memberTank.getVehicle().getTier() >= 8
 								|| (Clazz.SPG.equals(memberTank.getVehicle()
 										.getClazz()))
 								&& memberTank.getVehicle().getTier() >= 6) {
@@ -884,9 +884,9 @@ public class ClanProfiler {
 									.getVictories().replaceAll("&nbsp;", ""));
 							Double batt = Double.valueOf(memberTank
 									.getBattles().replaceAll("&nbsp;", ""));
-							double porcent = (vict.doubleValue() / batt
+							double percent = (vict.doubleValue() / batt
 									.doubleValue()) * 100;
-							extraporcentCell.setCellValue(porcent);
+							extraporcentCell.setCellValue(percent);
 						}
 						i++;
 					}
