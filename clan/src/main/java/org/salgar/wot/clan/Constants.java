@@ -35,104 +35,118 @@ public class Constants {
 	private Constants() {
 		// Soviet Arty
 		INTERESTED_VEHICLES.add(new Vehicle("S-51", 6, Clazz.SPG, Nation.USSR,
-				25));
+				23));
 		INTERESTED_VEHICLES.add(new Vehicle("SU-14", 6, Clazz.SPG, Nation.USSR,
-				24));
+				20));
 		INTERESTED_VEHICLES.add(new Vehicle("Object 212", 7, Clazz.SPG,
-				Nation.USSR, 21));
+				Nation.USSR, 17));
 		INTERESTED_VEHICLES.add(new Vehicle("Object 261", 8, Clazz.SPG,
-				Nation.USSR, 18));
+				Nation.USSR, 11));
 
 		// Soviet Heavy
 		INTERESTED_VEHICLES.add(new Vehicle("IS-7", 10, Clazz.HEAVY,
 				Nation.USSR, 1));
 		INTERESTED_VEHICLES.add(new Vehicle("IS-4", 9, Clazz.HEAVY,
-				Nation.USSR, 4));
+				Nation.USSR, 5));
 		INTERESTED_VEHICLES.add(new Vehicle("IS-3", 9, Clazz.HEAVY,
-				Nation.USSR, 29));
-		INTERESTED_VEHICLES.add(new Vehicle("IS", 9, Clazz.HEAVY,
+				Nation.USSR, 30));
+		INTERESTED_VEHICLES.add(new Vehicle("IS", 7, Clazz.HEAVY,
 				Nation.USSR, 31));
 
 
 		// Soviet Medium
 		INTERESTED_VEHICLES.add(new Vehicle("T-54", 9, Clazz.MED, Nation.USSR,
-				7));
+				8));
 		INTERESTED_VEHICLES.add(new Vehicle("T-44", 8, Clazz.MED, Nation.USSR,
-				12));
+				27));
 		INTERESTED_VEHICLES.add(new Vehicle("T-43", 7, Clazz.MED, Nation.USSR,
-				35));
+				33));
 
 		// Soviet TD
 		INTERESTED_VEHICLES.add(new Vehicle("Object 704", 9, Clazz.TD,
-				Nation.USSR, 10));
+				Nation.USSR, 14));
 		INTERESTED_VEHICLES.add(new Vehicle("ISU-152", 8, Clazz.TD,
-				Nation.USSR, 16));
+				Nation.USSR, 22));
 		INTERESTED_VEHICLES.add(new Vehicle("SU-152", 7, Clazz.TD,
-				Nation.USSR, 33));
+				Nation.USSR, 38));
 		
 
 		// German Arty
 		INTERESTED_VEHICLES.add(new Vehicle("GW Panther", 6, Clazz.SPG,
-				Nation.GER, 26));
+				Nation.GER, 39));
 		INTERESTED_VEHICLES.add(new Vehicle("GW Tiger", 7, Clazz.SPG,
-				Nation.GER, 22));
+				Nation.GER, 18));
 		INTERESTED_VEHICLES.add(new Vehicle("GW Typ E", 8, Clazz.SPG,
-				Nation.GER, 19));
+				Nation.GER, 12));
 
 		// German Heavy
 		INTERESTED_VEHICLES.add(new Vehicle("Maus", 10, Clazz.HEAVY,
 				Nation.GER, 2));
+		INTERESTED_VEHICLES.add(new Vehicle("E-100", 10, Clazz.HEAVY,
+				Nation.GER, 3));
+		INTERESTED_VEHICLES.add(new Vehicle("E-75", 9, Clazz.HEAVY,
+				Nation.GER, 5));		
 		INTERESTED_VEHICLES.add(new Vehicle("VK 4502 (P) Ausf. B", 9,
-				Clazz.HEAVY, Nation.GER, 5));
+				Clazz.HEAVY, Nation.GER, 6));
 		INTERESTED_VEHICLES.add(new Vehicle("PzKpfw VIB Tiger II", 8,
-				Clazz.HEAVY, Nation.GER, 28));
+				Clazz.HEAVY, Nation.GER, 25));
 		INTERESTED_VEHICLES.add(new Vehicle("PzKpfw VI Tiger", 7,
-				Clazz.HEAVY, Nation.GER, 40));
+				Clazz.HEAVY, Nation.GER, 31));
 
 
 		// German Medium
+		INTERESTED_VEHICLES.add(new Vehicle("E-50", 9, Clazz.MED,
+				Nation.GER, 9));
 		INTERESTED_VEHICLES.add(new Vehicle("Panther II", 9, Clazz.MED,
-				Nation.GER, 8));
+				Nation.GER, 28));
 		INTERESTED_VEHICLES.add(new Vehicle("Panther", 8, Clazz.MED,
-				Nation.GER, 13));
+				Nation.GER, 33));
 		INTERESTED_VEHICLES.add(new Vehicle("VK 3002 (DB)", 7, Clazz.MED,
-				Nation.GER, 45));		
+				Nation.GER, 40));		
 
 		// German TD
 		INTERESTED_VEHICLES.add(new Vehicle("Jagdtiger", 9, Clazz.TD,
-				Nation.GER, 11));
+				Nation.GER, 15));
 		INTERESTED_VEHICLES.add(new Vehicle("Ferdinand", 8, Clazz.TD,
-				Nation.GER, 16));
+				Nation.GER, 21));
 		INTERESTED_VEHICLES.add(new Vehicle("Jagdpanther", 7, Clazz.TD,
-				Nation.GER, 50));
+				Nation.GER, 36));
 		
 
 		// American Arty
 		INTERESTED_VEHICLES
-				.add(new Vehicle("M12", 6, Clazz.SPG, Nation.US, 27));
+				.add(new Vehicle("M12", 6, Clazz.SPG, Nation.US, 41));
 		INTERESTED_VEHICLES.add(new Vehicle("M40/M43", 7, Clazz.SPG, Nation.US,
-				23));
+				19));
 		INTERESTED_VEHICLES
-				.add(new Vehicle("T92", 8, Clazz.SPG, Nation.US, 20));
+				.add(new Vehicle("T92", 8, Clazz.SPG, Nation.US, 13));
 
 		// American Heavy
 		INTERESTED_VEHICLES.add(new Vehicle("T30", 10, Clazz.HEAVY, Nation.US,
-				3));
+				4));
 		INTERESTED_VEHICLES
-				.add(new Vehicle("T34", 9, Clazz.HEAVY, Nation.US, 6));
+				.add(new Vehicle("T34", 9, Clazz.HEAVY, Nation.US, 7));
 		INTERESTED_VEHICLES.add(new Vehicle("T32", 8, Clazz.HEAVY, Nation.US,
-				14));
+				26));
 		INTERESTED_VEHICLES.add(new Vehicle("T29", 7, Clazz.HEAVY, Nation.US,
-				30));
+				32));
 
 		// American Medium
 		INTERESTED_VEHICLES.add(new Vehicle("M46 Patton", 9, Clazz.MED,
-				Nation.US, 9));
+				Nation.US, 10));
 		INTERESTED_VEHICLES.add(new Vehicle("M26 Pershing", 8, Clazz.MED,
-				Nation.US, 15));
+				Nation.US, 29));
 		INTERESTED_VEHICLES
-				.add(new Vehicle("T20", 7, Clazz.MED, Nation.US, 40));
-
+				.add(new Vehicle("T20", 7, Clazz.MED, Nation.US, 34));
+		
+		// American TD
+		INTERESTED_VEHICLES.add(new Vehicle("T95", 9, Clazz.TD,
+				Nation.US, 16));
+		INTERESTED_VEHICLES.add(new Vehicle("T28", 8, Clazz.TD,
+				Nation.US, 22));
+		INTERESTED_VEHICLES.add(new Vehicle("T25 AT", 7, Clazz.TD,
+				Nation.US, 37));
+		
 		// Landing Zones
 		landingZones
 				.add(new LandingZone(
